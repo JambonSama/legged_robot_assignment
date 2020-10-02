@@ -1,4 +1,5 @@
 addpath('../dynamics/', '../set_parameters/');
+
 q_test = [0.9134    0.6324    0.0975];
 dq_test = [0.2785    0.5469    0.9575];
 

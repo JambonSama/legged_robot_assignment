@@ -15,18 +15,18 @@ function visualize(q)
     q2 = q(2);
     q3 = q(3);
 
-    x1 = - l1/2*sin(q1);
+    x1 = l1/2*sin(q1);
     z1 = l1/2*cos(q1);
-    x2 = - l1*sin(q1) - l2/2*sin(q2);
+    x2 = l1*sin(q1) - l2/2*sin(q2);
     z2 = l1*cos(q1) - l2/2*cos(q2);
-    x3 = - l1*sin(q1) + l3/2*sin(q3);
+    x3 = l1*sin(q1) + l3/2*sin(q3);
     z3 = l1*cos(q1) + l3/2 *cos(q3);
 
-    x_h = -l1*sin(q1);
+    x_h = l1*sin(q1);
     z_h = l1*cos(q1);
-    x_swf = -l1*sin(q1) -l2*sin(q2);
+    x_swf = l1*sin(q1) -l2*sin(q2);
     z_swf = l1*cos(q1) -l2*cos(q2);
-    x_t = -l1*sin(q1) +l3*sin(q3);
+    x_t = l1*sin(q1) +l3*sin(q3);
     z_t = l1*cos(q1) +l3*cos(q3);
 
     %% 
