@@ -14,7 +14,7 @@ tic();
 for j = 1:num_steps
     Y = sln.Y{j};
     [N, ~] = size(Y);
-    for i = 1:skip:N % what does skip do? Skip allow to skip a few step, so the animation can go faster
+    for i = 1:skip:N % what does skip do? 
         q = Y(i, 1:3);
         dq = Y(i, 4:end);
         pause(0.002);  % pause for 2 mili-seconds
@@ -28,10 +28,24 @@ for j = 1:num_steps
 end
 t_anim = toc();
 
-% Real time factor is the actual duration of the simulations (get it from sln) to
-% the time it takes for MATLAB to animate the simulations (get it from
-% t_anim). How does 'skip' affect this value? what does a real time factor
-% of 1 mean?
+% In the animations, what does a real-time factor of 1 mean? How about a 
+% real-time factor less than 1? 
+% Real time factor is the actual duration of the simulations (get it from
+% sln) divided by the time it takes for MATLAB to animate the simulations 
+% (obtained from t_anim). With a real-time factor of 1, we animate in
+% "real-time", with a real-time factor less than 1, we compute slowlier
+% than the "real-time". 0 < real_time_factor <= 1
+
+% How does “skip” in animate.m effect the real-time factor and the speed 
+% of the animation?
+% Skip allow to skip a few step, so the animation can go faster. It affects
+% the real time factor because we compute less steps for the same time
+% vector, so that it improves the real time factor.
+
+% What is the role of r0 in animate.m?
+% It is the foot position, so it has to be updated at each cycle, by
+% accumulating x_swf, which is the swing foot position increase.
+
 real_time_factor = 0.01*sln.T(end)/t_anim; % This is only an estimation 
 fprintf('Real time factor:');
 disp(real_time_factor);
