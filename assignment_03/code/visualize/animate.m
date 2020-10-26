@@ -32,9 +32,10 @@ t_anim = toc();
 % real-time factor less than 1? 
 % Real time factor is the actual duration of the simulations (get it from
 % sln) divided by the time it takes for MATLAB to animate the simulations 
-% (obtained from t_anim). With a real-time factor of 1, we animate in
-% "real-time", with a real-time factor less than 1, we compute slowlier
-% than the "real-time". 0 < real_time_factor <= 1
+% (obtained from t_anim). With a real-time factor of 1 or greater, we 
+% animate in "real-time", with a real-time factor less than 1, we compute 
+% slowlier than the "real-time". 0 < real_time_factor, but having one
+% greater than 1 has no use.
 
 % How does “skip” in animate.m effect the real-time factor and the speed 
 % of the animation?
