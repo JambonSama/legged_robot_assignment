@@ -6,8 +6,8 @@
 function [value,isterminal,direction] = event_func(t, y)
 
 % you may want to use kin_swf to set the 'value'
-[~, z_swf, ~, ~] = kin_swf(y);
-value = z_swf;
+[~, z_swf, ~, ~] = kin_swf(y(1:3),y(4:6));
+value = z_swf+0.001;
 isterminal = 1;
 direction = -1;
 

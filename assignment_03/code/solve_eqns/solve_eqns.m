@@ -25,16 +25,26 @@ sln.YE = {};
 
 for i = 1:num_steps
     [T, Y, TE, YE, ~] = ode45(@eqns, tspan, y0, options); % use ode45 to solve the equations of motion (eqns.m)
+    if (i==1)
 	sln.T{i} = T;
+    sln.TE{i} = TE;
+    else
+    sln.T{i} = T + sln.TE{i-1};
+    sln.TE{i} = TE + sln.TE{i-1};
+    end
 	sln.Y{i} = Y;
-	sln.TE{i} = TE;
 	sln.YE{i} = YE;
     if T(end) == tmax
         break
     end
     
+    q_m = sln.YE{i}(1:3)';
+    dq_m = sln.YE{i}(4:6)';
+    
     % Impact map   
     t0 = T(end);
+    [q_p,dq_p] = impact(q_m,dq_m);
+    y0 = [q_p;dq_p];
     
 end
 end

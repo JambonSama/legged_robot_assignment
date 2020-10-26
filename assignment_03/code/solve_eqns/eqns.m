@@ -6,8 +6,6 @@ q = y(1:3);
 dq = y(4:end);
 u = control(q, dq); % for the moment we set the control outputs to zero
 
-% n = 6;   
-% dy = zeros(n, 1);
 % write down the equations for dy:
 
 M = eval_M(q);

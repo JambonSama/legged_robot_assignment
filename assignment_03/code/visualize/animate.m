@@ -12,9 +12,9 @@ num_steps = numel(sln.Y); % total number of steps the robot has taken (find this
 r0 = [0; 0];
 tic();
 for j = 1:num_steps
-    Y = sln.Y;
+    Y = sln.Y{j};
     [N, ~] = size(Y);
-    for i = 1:skip:N % what does skip do?
+    for i = 1:skip:N % what does skip do? Skip allow to skip a few step, so the animation can go faster
         q = Y(i, 1:3);
         dq = Y(i, 4:end);
         pause(0.002);  % pause for 2 mili-seconds
@@ -32,7 +32,7 @@ t_anim = toc();
 % the time it takes for MATLAB to animate the simulations (get it from
 % t_anim). How does 'skip' affect this value? what does a real time factor
 % of 1 mean?
-real_time_factor = sln.T(end)/t_anim; % This is only an estimation 
+real_time_factor = 0.01*sln.T(end)/t_anim; % This is only an estimation 
 fprintf('Real time factor:');
 disp(real_time_factor);
 end
