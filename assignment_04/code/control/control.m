@@ -10,10 +10,10 @@ kd2 = parameters(4);
 alpha = parameters(5);
 
 % controller for torso
-u1 = ...;
+u1 = kpy*q(3)-alpha + kdy*dq(3);
 
 % controller for legs
-u2 = ...; 
+u2 = -kp2*(q(2)+q(1)) - kd2*(dq(2)+dq(1));
 
 % saturate the output torque
 u = [u1; u2];
