@@ -10,7 +10,7 @@ kd2 = parameters(4);
 alpha = parameters(5);
 
 % controller for torso
-u1 = kpy*q(3)-alpha + kdy*dq(3);
+u1 = kp1*q(3)-alpha + kd1*dq(3);
 
 % controller for legs
 u2 = -kp2*(q(2)+q(1)) - kd2*(dq(2)+dq(1));
