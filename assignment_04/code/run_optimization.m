@@ -9,14 +9,16 @@ dq0 = [0; 0; 8];
 x0 = [q0; dq0; control_hyper_parameters()];
 
 % use fminsearch and optimset to control the MaxIter
-% ...
+options = optimset('MaxIter',2e3);
+opti = fminsearch(@optimziation_fun,x0,options);
+
 
 %% simulate solution
 
 % extract parameters
-q0 = ...
-dq0 = ...
-x_opt = ...
+q0 = opti(1:3);
+dq0 = opti(4:6);
+x_opt = opti(7:end);
 
 % simulate
 num_steps = 10;
