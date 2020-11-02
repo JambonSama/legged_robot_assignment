@@ -86,7 +86,7 @@ if to_plot
     box on
     xlabel('t [s]'),ylabel('Velocity [m/s]')
     legend('speed of swing foot','speed of hip','min-max velocity of the foot','min-max velocity of the hip','location','best')
-    title('Angles vs time')
+    title('Velocity vs time')
     
     % Step frequency vs step number
     
