@@ -1,0 +1,25 @@
+\input{def/preambule}
+\begin{document}
+	%%%%%%%%%%%%%%%
+	%% RENEWCOMMAND
+	%%%%%%%%%%%%%%%
+	\renewcommand\labelitemi{\textbullet}
+	\renewcommand\labelitemii{$\circ$}
+	\renewcommand\labelitemiii{$\star$}
+	% redefines the itemizing symbols for the itemize environment, 
+	% cannot redefine the 4th lvl, 
+	% cannot have more than 4 lvls,
+	% in french, by default, it's all dashes...
+	
+	%%%%%%%%%%%%%
+	%% TITLE PAGE
+	%%%%%%%%%%%%%
+	\input{def/titlepage}
+	
+	%%%%%%%%
+	%% INPUT
+	%%%%%%%%
+	\input{01_introduction}
+	\input{02_results}
+	
+\end{document}
