@@ -161,6 +161,15 @@ table, % allows the use of colors in tables
 
 \usepackage{subcaption}
 
+\usepackage{tikz}
+
+\usetikzlibrary{shapes,arrows,positioning,calc}
+
+\tikzstyle{block} 		= [draw, fill={rgb:red,0;green,0.447;blue,0.7410;white,3}, rectangle, minimum height=1cm, minimum width=1.5cm, node distance=1.5cm, rounded corners]
+\tikzstyle{sum} 		= [draw, fill={rgb:red,0;green,0.447;blue,0.7410;white,3}, circle, node distance=1.5cm]
+\tikzstyle{input}		= [coordinate, node distance=1.5cm]
+\tikzstyle{output}    	= [coordinate, node distance=1.5cm]
+
 
 %%%%%%%%%%%
 %% LISTINGS
