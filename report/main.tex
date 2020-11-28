@@ -16,6 +16,13 @@
 	%%%%%%%%%%%%%
 	\input{def/titlepage}
 	
+	%%%%%%%%%%%%%%%%%%%
+	%% TABLE OF CONTENT
+	%%%%%%%%%%%%%%%%%%%
+	\setcounter{page}{1} % beginning of page numeration here
+	\tableofcontents
+	\newpage
+	
 	%%%%%%%%
 	%% INPUT
 	%%%%%%%%
@@ -24,5 +31,23 @@
 	\input{03_results}
 	\input{04_discussions}
 	\input{05_conclusion}
+
+	%%%%%%%%%%%%%%%
+	%% BIBLIOGRAPHY
+	%%%%%%%%%%%%%%%
+	\newpage
+	\section*{Bibliography} % to add a section-like unnumbered title
+	\addcontentsline{toc}{section}{Bibliography} % to add said title to the toc
+	\markboth{Bibliography}{Bibliography} % to modify the header
+%	\printbibliography[
+%	heading=subbibintoc,
+%	type=article,
+%	title={Articles}
+%	]
+	\printbibliography[
+	heading=subbibintoc,
+	type=thesis,
+	title={Thesis}
+	]
 	
 \end{document}
