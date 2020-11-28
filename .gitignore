@@ -6,8 +6,10 @@
 *.blg
 *.log
 *.out
+*.toc
 *.run.xml
 *.synctex.gz
+*eps-converted-to.pdf
 
 
 */main.pdf
