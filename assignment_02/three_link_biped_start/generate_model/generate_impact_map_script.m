@@ -250,14 +250,17 @@ end
 
 close all
 [~, i] = min(abs(diff(diff(T_lost))));
+[~, j] = min(abs(diff(T_lost)));
 dT_lost = diff(T_lost)./diff(alpha);
-slope = dT_lost(i)*alpha(2:30)+T_lost(i)-dT_lost(i)*alpha(i);
+slope1 = dT_lost(i)*alpha(i-12:i+12)+T_lost(i)-dT_lost(i)*alpha(i);
+slope2 = dT_lost(j)*alpha(j-12:end)+T_lost(j)-dT_lost(j)*alpha(j);
 
 figure
 hold on
 plot(alpha,T_lost)
-plot(alpha(2:30),slope)
+plot(alpha(i-12:i+12),slope1)
+plot(alpha(j-12:end),slope2)
 grid on
-title("Percentage of kinetic energy loss as a function of leg angle")
+% title("Percentage of kinetic energy loss as a function of leg angle")
 xlabel("Leg angle $\alpha$ [rad]","Interpreter","Latex")
 ylabel("Kinetic energy loss [\%]","Interpreter","Latex")
