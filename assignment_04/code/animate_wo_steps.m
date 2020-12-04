@@ -19,10 +19,10 @@ for i = 1:skip:N
     visualize(q, r0);
     hold off
     [x0, z0, ~, ~] = kin_swf(q);
-    if 
+    r0 = r0 + [x0; 0];
 end
-[x0, z0, ~, ~] = kin_swf(q);
-r0 = r0 + [x0; 0];
+
+
 
 t_anim = toc();
 real_time_factor = sln.T(end) / t_anim;
