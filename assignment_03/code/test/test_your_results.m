@@ -1,6 +1,6 @@
 % run the following code
 clear all
-load('sln_test.mat') 
+load('sln_test.mat')
 
 q0 = [pi/6; -pi/3; 0];
 dq0 = [0;0;0];
@@ -8,15 +8,13 @@ num_steps = 1000;
 sln = solve_eqns(q0, dq0, num_steps);
 
 % new way to verify the error.
-error = 0 ; 
+error = 0 ;
 for i = 1:num_steps
-    error = error + norm(sln.Y{i} - sln_test.Y{i}) ;
+	error = error + norm(sln.Y{i} - sln_test.Y{i}) ;
 end
 
 if(error < 0.0001)
-    disp('Great! your answer is right!')
+	disp('Great! your answer is right!')
 else
-    disp('OPS! Something is wrong! Please check your code carefully!')
+	disp('OPS! Something is wrong! Please check your code carefully!')
 end
-
-

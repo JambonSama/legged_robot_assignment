@@ -5,7 +5,6 @@
 % if your formulas for x1, z1, etc. makes sense. Example: q = [-pi/6, pi/6,
 % pi/8]
 function visualize(q)
-    addpath '/mnt/data/epfl/legged_robots/assignments/assignment_02/three_link_biped_start/visualize'
     [~, ~, ~, l1, l2, l3, ~] = set_parameters;
 
     q1 = q(1);
