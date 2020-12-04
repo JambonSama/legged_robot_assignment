@@ -12,21 +12,20 @@ syms dq1 dq2 dq3;
 syms l1 l2 l3 
 
 % write the symbolic formulas for x, z of masses m1, m2, m3:
-x1 = 0
-z1 = 0
-x2 = 0
-z2 = 0
-x3 = 0
-z3 = 0
+x1 = - l1/2*sin(-q1);
+z1 = l1/2*cos(-q1);
+x2 = - l1*sin(-q1) - l2/2*sin(q2);
+z2 = l1*cos(-q1) - l2/2*cos(q2);
+x3 = - l1*sin(-q1) + l3/2*sin(q3);
+z3 = l1*cos(-q1) + l3/2 *cos(q3);
 
 % velocities of masses m1, m2, m3
-dx1 = 0
-dz1 = 0
-dx2 = 0
-dz2 = 0
-dx3 = 0
-dz3 = 0
-
+dx1 = diff(x1, q1)*dq1
+dz1 = diff(z1, q1)*dq1
+dx2 = diff(x2, q1)*dq1 + diff(x2, q2)*dq2
+dz2 = diff(z2, q1)*dq1 + diff(z2, q2)*dq2
+dx3 = diff(x3, q1)*dq1 + diff(x3, q3)*dq3
+dz3 = diff(z3, q1)*dq1 + diff(z3, q3)*dq3
 %% Positions and masses of other points of interest:
 % For the sake of visualization and later for control (e.g., foot-placement) 
 % we calculate the kinematics for some other points of interest as shown below:
@@ -52,14 +51,12 @@ dz3 = 0
 % z_t : Torso top $y$-position
 
 % Write the symbolic formulas for the hip, swing foot and torso end point
-x_h = 0
-z_h = 0
-
-x_swf = 0
-z_swf = 0
-
-x_t = 0
-z_t = 0
+x_h = -l1*sin(-q1)
+z_h = l1*cos(-q1)
+x_swf = -l1*sin(-q1) -l2*sin(q2)
+z_swf = l1*cos(-q1) -l2*cos(q2)
+x_t = -l1*sin(-q1) +l3*sin(q3)
+z_t = l1*cos(-q1) +l3*cos(q3)
 %% Convert symbolic equations to MATLAB functions:
 % To convert your symbolic equations to MATLAB functions you can print out the 
 % symbolic formulas into a file (e.g., tmp.txt). Open tmp.txt and copy-paste the 

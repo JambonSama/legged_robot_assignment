@@ -11,37 +11,37 @@ syms m1 m2 m3 g;
 syms ddq1 ddq2 ddq3;
 
 % T1, T2, T3: kinetic energies of m1, m2, m3
-T1 = 0
-T2 = 0
-T3 = 0
+T1 = 1/2 * m1 * (dx1^2 + dz1^2)
+T2 = 1/2 * m2 * (dx2^2 + dz2^2)
+T3 = 1/2 * m3 * (dx3^2 + dz3^2)
 
 % V1, V2, V3: potential energies of m1, m2, m3
-V1 = 0
-V2 = 0
-V3 = 0
+V1 = m1 * g * z1;
+V2 = m2 * g * z2;
+V3 = m3 * g * z3;
 
-T = 0 % total kinetic energy 
-V = 0 % total potential energy 
+T = T1 + T2 + T3 % total kinetic energy
+V = V1 + V2 + V3 % total potential energy
 
-T = simplify(T, 'steps', 50);
-V = 0 % simplify V
+T = simplify(T, 'steps', 50); % simplify T
+V = simplify(V, 'steps', 50); % simplify V
 
-L = 0; % Lagrangian
+L = T - V; % Lagrangian
 %% 
 % We use dLdqi for $\frac{\partial L}{\partial q_i}$ and  dLddqi for $\frac{\partial 
 % L}{\partial \dot q_i}$. 
 
-dLdq1 = 9
-dLdq2 = 0
-dLdq3 = 0
+dLdq1 = diff(L, q1)
+dLdq2 = diff(L, q2)
+dLdq3 = diff(L, q3)
 
-dLddq1 = 0
-dLddq2 = 0
-dLddq3 = 0
+dLddq1 = diff(L, dq1)
+dLddq2 = diff(L, dq2)
+dLddq3 = diff(L, dq3)
 
-dLddq1_dt = 0
-dLddq2_dt = 0
-dLddq3_dt = 0
+dLddq1_dt = diff(dLddq1, q1) * dq1 + diff(dLddq1, dq1) * ddq1 + diff(dLddq1, q2) * dq2 + diff(dLddq1, dq2) * ddq2 + diff(dLddq1, q3) * dq3 + diff(dLddq1, dq3) * ddq3
+dLddq2_dt = diff(dLddq2, q1) * dq1 + diff(dLddq2, dq1) * ddq1 + diff(dLddq2, q2) * dq2 + diff(dLddq2, dq2) * ddq2 + diff(dLddq2, q3) * dq3 + diff(dLddq2, dq3) * ddq3
+dLddq3_dt = diff(dLddq3, q1) * dq1 + diff(dLddq3, dq1) * ddq1 + diff(dLddq3, q2) * dq2 + diff(dLddq3, dq2) * ddq2 + diff(dLddq3, q3) * dq3 + diff(dLddq3, dq3) * ddq3
 %% Lagrange equations of motion
 % Recall: 
 % 
@@ -49,8 +49,8 @@ dLddq3_dt = 0
 % q_i} = 0$$
 
 Eq1 = dLddq1_dt - dLdq1;
-Eq2 = 0
-Eq3 = 0
+Eq2 = dLddq2_dt - dLdq2;
+Eq3 = dLddq3_dt - dLdq3;
 %% 
 % Calculate the matrices M, C, G in the equations of motion:
 % 
@@ -58,33 +58,33 @@ Eq3 = 0
 % 
 % Recall how you did this in assignment 1. 
 
-G(1, 1) = 0 % use subs as in assignment 1
-G(2, 1) = 0
-G(3, 1) = 0
+G(1, 1) = subs(Eq1,[dq1,ddq1,dq2,ddq2,dq3,ddq3,g],[0,0,0,0,0,0,1])*g % use subs as in assignment 1
+G(2, 1) = subs(Eq2,[dq1,ddq1,dq2,ddq2,dq3,ddq3,g],[0,0,0,0,0,0,1])*g
+G(3, 1) = subs(Eq3,[dq1,ddq1,dq2,ddq2,dq3,ddq3,g],[0,0,0,0,0,0,1])*g
 
-M(1, 1) = 0
-M(1, 2) = 0
-M(1, 3) = 0
-M(2, 1) = 0
-M(2, 2) = 0
-M(2, 3) = 0
-M(3, 1) = 0
-M(3, 2) = 0
-M(3, 3) = 0
+M(1, 1) = subs(Eq1-G(1),[dq1,ddq1,dq2,ddq2,dq3,ddq3],[0,1,0,0,0,0])
+M(1, 2) = subs(Eq1-G(1),[dq1,ddq1,dq2,ddq2,dq3,ddq3],[0,0,0,1,0,0])
+M(1, 3) = subs(Eq1-G(1),[dq1,ddq1,dq2,ddq2,dq3,ddq3],[0,0,0,0,0,1])
+M(2, 1) = subs(Eq2-G(2),[dq1,ddq1,dq2,ddq2,dq3,ddq3],[0,1,0,0,0,0])
+M(2, 2) = subs(Eq2-G(2),[dq1,ddq1,dq2,ddq2,dq3,ddq3],[0,0,0,1,0,0])
+M(2, 3) = subs(Eq2-G(2),[dq1,ddq1,dq2,ddq2,dq3,ddq3],[0,0,0,0,0,1])
+M(3, 1) = subs(Eq3-G(3),[dq1,ddq1,dq2,ddq2,dq3,ddq3],[0,1,0,0,0,0])
+M(3, 2) = subs(Eq3-G(3),[dq1,ddq1,dq2,ddq2,dq3,ddq3],[0,0,0,1,0,0])
+M(3, 3) = subs(Eq3-G(3),[dq1,ddq1,dq2,ddq2,dq3,ddq3],[0,0,0,0,0,1])
 
-C(1, 1) = 0
-C(1, 2) = 0
-C(1, 3) = 0
-C(2, 1) = 0
-C(2, 2) = 0
-C(2, 3) = 0
-C(3, 1) = 0
-C(3, 2) = 0
-C(3, 3) = 0
+C(1, 1) = subs(Eq1-G(1),[dq1,ddq1,dq2,ddq2,dq3,ddq3],[dq1,0,0,0,0,0])/dq1
+C(1, 2) = subs(Eq1-G(1),[dq1,ddq1,dq2,ddq2,dq3,ddq3],[0,0,dq2,0,0,0])/dq2
+C(1, 3) = subs(Eq1-G(1),[dq1,ddq1,dq2,ddq2,dq3,ddq3],[0,0,0,0,dq3,0])/dq3
+C(2, 1) = subs(Eq2-G(2),[dq1,ddq1,dq2,ddq2,dq3,ddq3],[dq1,0,0,0,0,0])/dq1
+C(2, 2) = subs(Eq2-G(2),[dq1,ddq1,dq2,ddq2,dq3,ddq3],[0,0,dq2,0,0,0])/dq2
+C(2, 3) = subs(Eq2-G(2),[dq1,ddq1,dq2,ddq2,dq3,ddq3],[0,0,0,0,dq3,0])/dq3
+C(3, 1) = subs(Eq3-G(3),[dq1,ddq1,dq2,ddq2,dq3,ddq3],[dq1,0,0,0,0,0])/dq1
+C(3, 2) = subs(Eq3-G(3),[dq1,ddq1,dq2,ddq2,dq3,ddq3],[0,0,dq2,0,0,0])/dq2
+C(3, 3) = subs(Eq3-G(3),[dq1,ddq1,dq2,ddq2,dq3,ddq3],[0,0,0,0,dq3,0])/dq3
 %%
 G = simplify(G, 'steps', 50)
-M = 0 % simplify M
-C = 0 % simplify C
+M = simplify(M, 'steps', 50) % simplify M
+C = simplify(C, 'steps', 50) % simplify C
 %% 
 % To check if the extraction of M, C, G is correct. Note that error being zero 
 % does not mean that all your calculations of M, C, and G are correct. 
@@ -110,14 +110,14 @@ error = simplify(M * ddq + C * dq + G - Eq)
 % 
 
 syms u1 u2 delq1 delq2 delq3
-%th1 = ; % angle between link 1 and link 3
-%th2 = ; % angle between link 2 and link 3
-%del_th1 = ; % virtual angle variation for th1
-%del_th2 = ; % virtual angle variation for th2
-%del_W1 = ; % virtual work done by u1
-%del_W2 = ; % virtual work done by u2
-%del_W = ; % total virtual work
-%del_W = collect(del_W, [delq1, delq2, delq3])
+th1 = pi/2+q1-q3; % angle between link 1 and link 3
+th2 = pi/2-q3+q2; % angle between link 2 and link 3
+del_th1 = diff(th1, q1)*delq1 + diff(th1, q3)*delq3; % virtual angle variation for th1
+del_th2 = diff(th2, q2)*delq2 + diff(th2, q3)*delq3; % virtual angle variation for th2
+del_W1 = u1*del_th1; % virtual work done by u1
+del_W2 = u2*del_th2; % virtual work done by u2
+del_W = del_W1+del_W2; % total virtual work
+del_W = collect(del_W, [delq1, delq2, delq3])
 %% 
 % Extract the B matrix: 
 % 
@@ -132,18 +132,18 @@ syms u1 u2 delq1 delq2 delq3
 % 
 % Calculate R_Eq1, R_Eq2, R_q3
 
-%R_Eq1 = % use subs function 
-%R_Eq2 = 
-%R_Eq3 = 
+R_Eq1 = subs(del_W,[delq1,delq2,delq3],[1,0,0])% use subs function 
+R_Eq2 = subs(del_W,[delq1,delq2,delq3],[0,1,0])
+R_Eq3 = subs(del_W,[delq1,delq2,delq3],[0,0,1])
 %% 
 % From the equations above write the $B$ matrix:
 
-%B(1, 1) = ;
-%B(1, 2) = ;
-%B(2, 1) = ;
-%B(2, 2) = ;
-%B(3, 1) = ;
-%B(3, 2) = ;
+B(1, 1) = subs(R_Eq1,[u1,u2],[1,0]);
+B(1, 2) = subs(R_Eq1,[u1,u2],[0,1]);
+B(2, 1) = subs(R_Eq2,[u1,u2],[1,0]);
+B(2, 2) = subs(R_Eq2,[u1,u2],[0,1]);
+B(3, 1) = subs(R_Eq3,[u1,u2],[1,0]);
+B(3, 2) = subs(R_Eq3,[u1,u2],[0,1]);
 B = sym(B) % why do we need this line of code? 
 %% 
 % Write the symbolic functions to a MATLAB *.m function. 
@@ -159,10 +159,10 @@ B = sym(B) % why do we need this line of code?
 % 
 % function B = eval_B()
 
-matlabFunction(M, 'File', '../dynamics/eval_M_tmp');
-matlabFunction(C, 'File', '../dynamics/eval_C_tmp');
-matlabFunction(G, 'File', '../dynamics/eval_G_tmp');
-matlabFunction(B, 'File', '../dynamics/eval_B_tmp');
+matlabFunction(M, 'File', '../dynamics/eval_M');
+matlabFunction(C, 'File', '../dynamics/eval_C');
+matlabFunction(G, 'File', '../dynamics/eval_G');
+matlabFunction(B, 'File', '../dynamics/eval_B');
 %% 
 % *Finally, remove the temporary functions eval_M_tmp, eval_C_tmp, eval_G_tmp, 
 % eval_B_tmp. We later, will be using the functions eval_M.m, eval_C.m, eval_G.m, 
