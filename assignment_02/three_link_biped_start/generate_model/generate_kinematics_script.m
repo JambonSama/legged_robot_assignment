@@ -1,15 +1,14 @@
 %% Generate the kinematics for the Three-link 2D Biped
-% This function calculates the kinematics of the 3-link 2D biped. In particular, 
-% the position and velocities of the masses in an intertial frame. 
-% 
-% 
+% This function calculates the kinematics of the 3-link 2D biped. In particular,
+% the position and velocities of the masses in an intertial frame.
+
 %% The positions and velocities of the three masses $m_1$, $m_2$ , $m_3$:
 
 syms x1 z1 x2 z2 x3 z3;
 syms dx1 dz1 dx2 dz2 dx3 dz3;
 syms q1 q2 q3;
 syms dq1 dq2 dq3;
-syms l1 l2 l3 
+syms l1 l2 l3
 
 % write the symbolic formulas for x, z of masses m1, m2, m3:
 x1 = - l1/2*sin(-q1);
@@ -20,47 +19,43 @@ x3 = - l1*sin(-q1) + l3/2*sin(q3);
 z3 = l1*cos(-q1) + l3/2 *cos(q3);
 
 % velocities of masses m1, m2, m3
-dx1 = diff(x1, q1)*dq1
-dz1 = diff(z1, q1)*dq1
-dx2 = diff(x2, q1)*dq1 + diff(x2, q2)*dq2
-dz2 = diff(z2, q1)*dq1 + diff(z2, q2)*dq2
-dx3 = diff(x3, q1)*dq1 + diff(x3, q3)*dq3
-dz3 = diff(z3, q1)*dq1 + diff(z3, q3)*dq3
+dx1 = diff(x1, q1)*dq1;
+dz1 = diff(z1, q1)*dq1;
+dx2 = diff(x2, q1)*dq1 + diff(x2, q2)*dq2;
+dz2 = diff(z2, q1)*dq1 + diff(z2, q2)*dq2;
+dx3 = diff(x3, q1)*dq1 + diff(x3, q3)*dq3;
+dz3 = diff(z3, q1)*dq1 + diff(z3, q3)*dq3;
+
 %% Positions and masses of other points of interest:
-% For the sake of visualization and later for control (e.g., foot-placement) 
+% For the sake of visualization and later for control (e.g., foot-placement)
 % we calculate the kinematics for some other points of interest as shown below:
-% 
-% 
-% 
-% 
-% 
-% 
-% 
+%
 % Variables definitions:
-% 
+%
 % x_swf : Swing foot $x$-position
-% 
+%
 % z_swf : Swing foot $y$-position
-% 
+%
 % x_h : Hip $x$-position
-% 
+%
 % z_h : Hip $y$-position
-% 
+%
 % x_t : Torso top $x$-position
-% 
+%
 % z_t : Torso top $y$-position
 
 % Write the symbolic formulas for the hip, swing foot and torso end point
-x_h = -l1*sin(-q1)
-z_h = l1*cos(-q1)
-x_swf = -l1*sin(-q1) -l2*sin(q2)
-z_swf = l1*cos(-q1) -l2*cos(q2)
-x_t = -l1*sin(-q1) +l3*sin(q3)
-z_t = l1*cos(-q1) +l3*cos(q3)
+x_h = -l1*sin(-q1);
+z_h = l1*cos(-q1);
+x_swf = -l1*sin(-q1) -l2*sin(q2);
+z_swf = l1*cos(-q1) -l2*cos(q2);
+x_t = -l1*sin(-q1) +l3*sin(q3);
+z_t = l1*cos(-q1) +l3*cos(q3);
+
 %% Convert symbolic equations to MATLAB functions:
-% To convert your symbolic equations to MATLAB functions you can print out the 
-% symbolic formulas into a file (e.g., tmp.txt). Open tmp.txt and copy-paste the 
-% formulas to your MATLAB function (e.g. you may want to use these formulas in 
+% To convert your symbolic equations to MATLAB functions you can print out the
+% symbolic formulas into a file (e.g., tmp.txt). Open tmp.txt and copy-paste the
+% formulas to your MATLAB function (e.g. you may want to use these formulas in
 % the visualize.m function).
 
 tmp = fopen('tmp.txt', 'wt');

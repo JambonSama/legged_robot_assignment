@@ -2,8 +2,7 @@
 % Evaluate the Mass matrix given q
 function M = eval_M(q)
 addpath('../dynamics/', '../set_parameters/');
-[m1, m2, m3, l1, l2, l3, g] = set_parameters();
-
+[m1, m2, m3, l1, l2, l3, ~] = set_parameters();
 
 q1 = q(1);
 q2 = q(2);

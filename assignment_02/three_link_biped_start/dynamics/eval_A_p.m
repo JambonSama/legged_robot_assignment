@@ -1,7 +1,7 @@
 function A_p = eval_A_p(q_p)
 
 addpath('../dynamics/', '../set_parameters/');
-[m1, m2, m3, l1, l2, l3, g] = set_parameters();
+[m1, ~, m3, l1, l2, l3, ~] = set_parameters();
 m = m1;
 
 q1_p = q_p(1);
