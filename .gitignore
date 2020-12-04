@@ -10,7 +10,9 @@
 *.run.xml
 *.synctex.gz
 *eps-converted-to.pdf
+*.m~
 
 
 */main.pdf
-/assignment_04/code/slprj/
+assignment_04/code/slprj/
+assignment*/**/*.png
