@@ -22,8 +22,6 @@ for i = 1:skip:N
     r0 = r0 + [x0; 0];
 end
 
-
-
 t_anim = toc();
 real_time_factor = sln.T(end) / t_anim;
 fprintf('Real time factor:');
