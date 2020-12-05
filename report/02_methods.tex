@@ -42,6 +42,16 @@ q_1 \\ q_2 \\ q_3
 	\text{d}z_3 &= -\mathrm{dq}_{1}\,l_{1}\,\sin\left(q_{1}\right)-\dfrac{\mathrm{dq}_{3}\,l_{3}\,\sin\left(q_{3}\right)}{2}
 \end{align*}
 
+A quick visualization allows to assess visually that the kinematics are correct:
+
+\begin{figure}[H]
+	\begin{center}
+		\includegraphics[angle=0,width=0.5\textwidth]{assignment_02_visualization}
+	\end{center}
+	\caption{Visualization of the kinematics of the three-link 2D biped model.}
+\end{figure}
+
+
 \subsubsection{Dynamics}
 
 % generate dynamics.mlx
@@ -50,9 +60,10 @@ q_1 \\ q_2 \\ q_3
 Computing the dynamics means computing the mass matrix $\mathbf{M}$, Coriolis matrix $\mathbf{C}$, gravity matrix $\mathbf{G}$ and control matrix $\mathbf{B}$ for the robot, from the kinematics, using the Lagrangian method.
 This allows to have the equation of motion for the robot:
 
-\begin{align*}
+\begin{align}
+	\label{eq::motion_eq}
 	\mathbf{M}\left(\mathbf{q}\right)\mathbf{\ddot{q}} + \mathbf{C}\left(\mathbf{q},\mathbf{\dot{q}}\right)\mathbf{\dot{q}} + \mathbf{G}\left(\mathbf{q}\right) &= \mathbf{Bu}
-\end{align*}
+\end{align}
 
 The first step is to compute the Langrangian of the system:
 
@@ -158,7 +169,7 @@ The obtained matrices are:
 \end{align*}
 
 It is interesting to notice that the mass matrix $\mathbf{M}$ corresponds to the Jacobian of the total kinetic energy $T$ with respect to the generalized coordinates.
-That is a normal result, since kinetic energy is derived from moving masses.% (\textbf{assignement 1 question}).
+That is a normal result, since kinetic energy is derived from moving masses.% (\textbf{assignment 1 question}).
 
 \subsubsection{Impact map}
 
@@ -200,7 +211,7 @@ In particular, we can write:
 	\end{bmatrix}
 \end{align*}
 
-The angular positions are the same (semantically) before and after impact, so the mapping only needs to account for the change of reference frame.
+The angular positions are the same (semantically) before and after impact, so their mapping $\mathbf{\Delta}_q \left( \mathbf{q}_m \right)$ only needs to account for the change of reference frame.
 
 \vspace{\baselineskip}
 
@@ -229,14 +240,13 @@ After computation:
 
 with $m=m_1=m_2$, and thus both $\mathbf{q}_p$ and $\mathbf{\dot{q}}_p$ can be computed.
 
-\vspace{\baselineskip}
-
-\textbf{Assignement 2 questions:}
+\paragraph{Assignment 2 questions}
 
 \begin{enumerate}
 	\item \textit{What can you say about the potential energy before and after impact?}
-	
+
 	The potential energy before and after the impact are the same, since the frame of reference is moved from one foot to another without any change in the position, velocity or acceleration of the different masses.
+
 	\item \textit{Try $\mathbf{q}_m = \begin{bmatrix}
 		pi/6 & -pi/6 & pi/10
 	\end{bmatrix}$, $\mathbf{\dot{q}}_m = \begin{bmatrix}
@@ -244,6 +254,7 @@ with $m=m_1=m_2$, and thus both $\mathbf{q}_p$ and $\mathbf{\dot{q}}_p$ can be c
 	\end{bmatrix}$. What percentage of the kinetic energy of the biped is lost due to the impact?}
 
 	Computing using our functions, we find that 38.73\% of the kinetic energy is lost during the impact of the foot for those parameters.
+
 	\item \textit{Plot the percentage of the kinetic energy loss due to impact as a function of angle $\alpha$ where $\mathbf{q}_m=\begin{bmatrix}
 		\alpha & -\alpha & 0
 	\end{bmatrix}$ and $\alpha$ varies from 0 to $\pi/4$. Assume that $\mathbf{\dot{q}} = \begin{bmatrix}
@@ -256,7 +267,193 @@ with $m=m_1=m_2$, and thus both $\mathbf{q}_p$ and $\mathbf{\dot{q}}_p$ can be c
 		\end{center}
 		\caption{Percentage of kinetic energy loss as a function of leg angle.}
 	\end{figure}
+
 	\item \textit{The bigger $\alpha$ is, the bigger is the step length. Based on your answer to question 3, what is the relation between step length and energy loss at impact given a fixed $\mathbf{\dot{q}}_m$?}
+
+	The bigger the step, the bigger the energy loss: if there is no step at all (i.e. if $\alpha=0$), there is no energy loss.
+	From $\alpha=0$ to $\alpha=\SI{0.15}{\radian}$, the loss rate in kinetic energy increases.
+	From $\alpha=\SI{0.15}{\radian}$ to $\alpha=\SI{0.74}{\radian}$, the loss rate in kinetic energy decreases.
+\end{enumerate}
+
+\subsection{Simulation}
+
+In the introduction, the control design pipeline was described in three steps.
+After the modelling step that has been discussed in the previous section, there is the simulation step.
+The idea is to translate the (second order) equations of motion (for swing phase), Equation~\ref{eq::motion_eq}, into first order differential equations, in order to solve them numerically.
+The discrete events of impact with the ground can be dealt with an even function that interrupts the integrator of the numerical integration when impact conditions are met.
+When impact is dealt with, the integrator is given new "initial conditions" and numerical integration is resumed.
+
+\subsubsection{Equations of motion}
+% eqns.m
+% event func.m
+% solve eqns.m
+
+To translate the second order equation of motion into a first order differential equation, first, let's define $\mathbf{y}$ as follows:
+
+\begin{align}
+	\label{eq::angle_solution}
+	\mathbf{y} &= \begin{bmatrix}
+		\mathbf{y}_1 \\ \mathbf{y}_2
+	\end{bmatrix} = \begin{bmatrix}
+		\mathbf{q} \\ \mathbf{\dot{q}}
+	\end{bmatrix}
+\end{align}
+
+From which, with Equation~\ref{eq::motion_eq}, it follows that:
+
+\begin{align*}
+	\mathbf{\dot{y}} &= \begin{bmatrix}
+		\mathbf{\dot{q}} \\ \mathbf{\ddot{q}}
+	\end{bmatrix} \\
+	&= \begin{bmatrix}
+		\mathbf{y}_2 \\ \mathbf{M}^{-1} \left( \mathbf{y}_1 \right) \left( \mathbf{Bu} - \mathbf{C} \left( \mathbf{y}_1, \mathbf{y}_2 \right) \mathbf{y}_2 + \mathbf{G} \left( \mathbf{y}_1 \right) \right)
+	\end{bmatrix}
+\end{align*}
+
+The event function taking care of the impact with the ground triggers when the swing foot hits
+the ground with a negative vertical velocity.
+
+\vspace{\baselineskip}
+
+The numerical solution is computed by \verb|ode45|.
+
+\subsubsection{Animation}
+% animate.m (in the “visualize” folder)
+
+Then, the idea is to extract join coordinates $\mathbf{q}$ from the solution computed by \verb|ode45| as described by Equation~\ref{eq::angle_solution} (the numerical integration provides a solution vector for $\mathbf{y}$).
+
+\paragraph{Assignment 3 questions}
+
+\begin{enumerate}
+	\item \textit{In the animations, what does a real-time factor of 1 mean? How about a real-time factor less than 1?}
+
+	Real time factor is the actual duration of the simulations (obtained from \verb|sln|) divided by the time it takes for MATLAB to animate the simulations (obtained from \verb|t_anim|). With a real-time factor of 1 or greater, the animation is done in "real-time".
+	With a real-time factor lesser than 1, the computation is more slow than real-time".
+	\verb|real_time_factor| is a non-null positive value, but having one greater than 1 has no use, because even when the computation happens faster, the displaying doesn't.
+
+	\item \textit{How does "skip" in animate.m effect the real-time factor and the speed of the animation?}
+
+	Skip allow to skip a few step, so the animation can go faster. It affects the real time factor because less steps are computed for the same time vector, so that it improves the real time factor.
+
+	\item \textit{What is the role of} \verb|r0| \textit{in animate.m?}
+
+	It is the foot position, so it has to be updated at each cycle, by accumulating \verb|x_swf|, which is the swing foot position increase.
+\end{enumerate}
+
+\subsubsection{Numerical integration}
+% numerical integration.zip
+
+\paragraph{Explicit Euler}
+
+\begin{enumerate}
+	\item \textit{Explain the meaning of the state-space plot. What should be the expected state-space plot?}
+
+	The state-space plot displays the position against the speed. Because the analytical solution for the position is sinusoidal, the speed is also sinusoidal, albeit with a phase shift of \SI{\pi/2}{\radian}, so that the state-space should display a circle. The fact that it displays an outward spirals shows that the solution diverges.
+
+	\item \textit{Why does the numerical solution diverges from the true solution?}
 	
-	The energy loss appears to be akin to a square root function. The bigger the step, the bigger the energy loss : if there is no step at all (i.e. if $\alpha=0$), there is no energy loss. If we were to optimize the energy loss over the distance travelled, we'd have to look for the inflexion point (which is approximately at $\alpha = \SI{0.15}{\radian}$), because the energy loss increases slowlier at first (from $\alpha=0$ to $\alpha\sim\SI{0.15}{\radian}$), and then faster.  
+	The explicit Euler numerical integration is a first order approximation of the Taylor series. Here, the position is a cosine, and so the speed is a sine. The absolute value of the first order Taylor approximation of a sine ($\sin x \sim x$) is always bigger than the approximated value (that is, $|x|>|\sin x|$), so that the state-space plot cannot be a circle, and in fact spirals to divergence.
+
+	\item \textit{What can you do to better approximate the actual solution with this method?}
+	
+	When the step size $dt$ is reduced, the error between an analytical solution and the numerical approximation diminishes:
+	
+	\begin{figure}[H]
+		\begin{subfigure}[h]{\textwidth}
+			\begin{center}
+				\includegraphics[angle=0,width=0.7\textwidth]{num_int_exp_euler_01}
+				\caption{$dt=0.1$}
+			\end{center}
+		\end{subfigure}
+		
+		\begin{subfigure}[h]{\textwidth}
+			\begin{center}
+				\includegraphics[angle=0,width=0.7\textwidth]{num_int_exp_euler_001}
+				\caption{$dt=0.01$}
+			\end{center}
+		\end{subfigure}
+		\caption{Numerical and analytical solutions and state-space plot to $m y'' + d y' + k y =0$ with the explicit Euler method.}
+	\end{figure}
+
+	That's because the local truncation error for the explicit Euler method is $\text{LTE} = \dfrac{1}{2}dt^2y''(t_0)+O(dt^3)$, so that when $dt$ decreases, so does the LTE (and thus the GTE, the global truncation error).
+\end{enumerate}
+
+\paragraph{Semi-implicit Euler}
+
+\begin{enumerate}
+	\item \textit{Is this method stable and when?}
+	
+	This method is stable for complex roots of the characteristic equation within the circle defined by $s>-\dfrac{2}{dt}$. For real roots, the solution is always stable.
+	
+	\item \textit{What about the accuracy of the obtained solution?}
+	
+	The semi-implicit Euler numerical method is a first-order integrator, just like the explicit Euler method, but the use of $u(t_0+dt)$ instead of $u(t_0)$ in the equation for $y(t_0+dt)$ makes it more accurate than the explicit Euler method, as can be assessed visually when comparing (for fixed parameters):
+
+	\begin{figure}[H]
+		\begin{subfigure}[h]{\textwidth}
+			\begin{center}
+				\includegraphics[angle=0,width=0.7\textwidth]{num_int_exp_euler_001}
+				\caption{explicit Euler method}
+			\end{center}
+		\end{subfigure}
+		
+		\begin{subfigure}[h]{\textwidth}
+			\begin{center}
+				\includegraphics[angle=0,width=0.7\textwidth]{num_int_semi_imp_euler_001}
+				\caption{semi-implicit Euler method}
+			\end{center}
+		\end{subfigure}
+		\caption{Numerical and analytical solutions and state-space plot to $m y'' + d y' + k y =0$ with $dt=0.01$.}
+	\end{figure}
+\end{enumerate}
+
+\paragraph{Runge-Kutta of Order 4 (Midpoint Method)}
+
+\begin{enumerate}
+	\item \textit{What is the error of this method?}
+	
+	The LTE of RK4 is $O(dt^4)$, and thus GTE is $O(dt^3)$.
+	
+	\item \textit{Do you expect the solution to diverge?}
+	
+	The state-space plot is circular, so the solution doesn't diverge:
+	\begin{figure}[H]
+		\begin{center}
+			\includegraphics[angle=0,width=0.7\textwidth]{num_int_rk4_01}
+			\caption{Numerical and analytical solutions and state-space plot to $m y'' + d y' + k y =0$ with $dt=0.1$ and the Runge-Kutta order 4 method.}
+		\end{center}
+	\end{figure}
+\end{enumerate}
+
+\paragraph{Adaptive Time Stepping}
+
+\begin{enumerate}
+	\item \textit{Change the density of the time points in np.linspace. What do you observe?}
+	
+	When the density of points increases, the solution gains in temporal resolution.
+	
+	\begin{figure}[H]
+		\begin{subfigure}[h]{\textwidth}
+			\begin{center}
+				\includegraphics[angle=0,width=0.7\textwidth]{num_int_odeint_02}
+				\caption{$dt=0.2$}
+			\end{center}
+		\end{subfigure}
+		
+		\begin{subfigure}[h]{\textwidth}
+			\begin{center}
+				\includegraphics[angle=0,width=0.7\textwidth]{num_int_odeint_005}
+				\caption{$dt=0.05$}
+			\end{center}
+		\end{subfigure}
+		\cprotect\caption{Numerical and analytical solutions and state-space plot to $m y'' + d y' + k y =0$ with \verb|odeint| from \verb|SciPy|.}
+	\end{figure}
+	
+	\item \textit{Do you expect the solution to diverge?}
+	
+	The state-space plot is circular, so the solution doesn't diverge.
+	
+	\item \textit{Which algorithms are supported by} \verb|odeint|\textit{?}
+	
+	\verb|odeint| uses the LSODA algorithm~\cite{hindmarsh}, which switches automatically between the BDF (stiff) method and the Adams (non-stiff) method, so that the integration is suited to the problem.
 \end{enumerate}
