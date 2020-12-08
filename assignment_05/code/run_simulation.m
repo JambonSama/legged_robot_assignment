@@ -5,7 +5,7 @@ close all;
 %% run simulation
 q0 = [pi/9; -pi/9; 0];
 dq0 = [0; 0; 8]; 
-num_steps = 10;
+num_steps = 3;
 
 default_parameters = control_hyper_parameters(num_steps);
 sln = solve_eqns(q0, dq0, num_steps, default_parameters);
