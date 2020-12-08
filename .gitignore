@@ -11,6 +11,7 @@
 *.synctex.gz
 *eps-converted-to.pdf
 *.m~
+*.asv
 
 
 **/main.pdf
