@@ -343,6 +343,8 @@ Then, the idea is to extract join coordinates $\mathbf{q}$ from the solution com
 \subsubsection{Numerical integration}
 % numerical integration.zip
 
+Numerical integration is handy tool for engineers to calculate a number of numerical values, and amongst others, numerical solutions to differential equations. However handy, numerical integration as a field as its subtleties, and solutions should be carefully examined before being applied to problems (especially stiff problems). Let's discuss some of the more common numerical integration algorithms.
+
 \paragraph{Explicit Euler}
 
 \begin{enumerate}
@@ -352,7 +354,7 @@ Then, the idea is to extract join coordinates $\mathbf{q}$ from the solution com
 
 	\item \textit{Why does the numerical solution diverges from the true solution?}
 	
-	The explicit Euler numerical integration is a first order approximation of the Taylor series. Here, the position is a cosine, and so the speed is a sine. The absolute value of the first order Taylor approximation of a sine ($\sin x \sim x$) is always bigger than the approximated value (that is, $|x|>|\sin x|$), so that the state-space plot cannot be a circle, and in fact spirals to divergence.
+	The explicit Euler numerical integration is a first order approximation of the Taylor series. Here, the position is a cosine, and so the speed is a sine. The absolute value of the first order Taylor approximation of a sine ($\sin x \sim x$) is always bigger than the approximated value (that is, $|x|>|\sin x|$), so that the state-space plot cannot be a circle, and in fact diverges into a spiral.
 
 	\item \textit{What can you do to better approximate the actual solution with this method?}
 	
@@ -383,7 +385,7 @@ Then, the idea is to extract join coordinates $\mathbf{q}$ from the solution com
 \begin{enumerate}
 	\item \textit{Is this method stable and when?}
 	
-	This method is stable for complex roots of the characteristic equation within the circle defined by $s>-\dfrac{2}{dt}$. For real roots, the solution is always stable.
+	This method is stable for complex roots of the characteristic equation within the circle defined by $s>-\dfrac{2}{dt}$. For real roots, the solution is always stable. In this particular instance, the state-space plot is closed, so the solution is stable.
 	
 	\item \textit{What about the accuracy of the obtained solution?}
 	
@@ -412,11 +414,11 @@ Then, the idea is to extract join coordinates $\mathbf{q}$ from the solution com
 \begin{enumerate}
 	\item \textit{What is the error of this method?}
 	
-	The LTE of RK4 is $O(dt^4)$, and thus GTE is $O(dt^3)$.
+	The LTE of RK4 is $O(dt^4)$, and thus the GTE is $O(dt^3)$.
 	
 	\item \textit{Do you expect the solution to diverge?}
 	
-	The state-space plot is circular, so the solution doesn't diverge:
+	The state-space plot is closed, so the solution doesn't diverge:
 	\begin{figure}[H]
 		\begin{center}
 			\includegraphics[angle=0,width=0.7\textwidth]{num_int_rk4_01}
