@@ -13,8 +13,8 @@
 *.m~
 
 
-*/main.pdf
-assignment_04/code/slprj/
+**/main.pdf
+**/slprj/
 assignment*/**/*.png
-/assignment_04/code/slprj/
+
 /assignment_04 - Copy/
