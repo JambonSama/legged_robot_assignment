@@ -9,7 +9,7 @@ function C = eval_C(q, dq)
 	dq2 = dq(2);
 	dq3 = dq(3);
 
-	[m1, m2, m3, l1, l2, l3, ~] = set_parameters();
+	[~, m2, m3, l1, l2, l3, ~] = set_parameters();
 
 	t2 = q1-q2;
 	t3 = sin(t2);

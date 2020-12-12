@@ -37,29 +37,29 @@ function visualize(q, r0)
 	%%
 	% Here plot a schematic of the configuration of three link biped at the
 	% generalized coordinate q = [q1, q2, q3]:
-    line_width = 2;
-    marker_size = 30;
+	line_width = 2;
+	marker_size = 30;
 
 	% links
 	plot([x0, x_h], [z0, z_h], 'linewidth', line_width);
 	hold on
-    plot([x_h, x_swf], [z_h, z_swf], 'linewidth', line_width);
-    plot([x_h, x_t], [z_h, z_t], 'linewidth', line_width);
+	plot([x_h, x_swf], [z_h, z_swf], 'linewidth', line_width);
+	plot([x_h, x_t], [z_h, z_t], 'linewidth', line_width);
 
-    % point masses
-    plot(x1, z1, '.', 'markersize', marker_size, 'color', '#0072BD');
-    plot(x2, z2, '.', 'markersize', marker_size, 'color', '#D95319');
-    plot(x3, z3, '.', 'markersize', marker_size, 'color', '#EDB120');
+	% point masses
+	plot(x1, z1, '.', 'markersize', marker_size, 'color', '#0072BD');
+	plot(x2, z2, '.', 'markersize', marker_size, 'color', '#D95319');
+	plot(x3, z3, '.', 'markersize', marker_size, 'color', '#EDB120');
 
-    % plot a line for "ground"
+	% plot a line for "ground"
 	plot([-1, 1], [0, 0], 'color', 'black');
-    
-    axis 'equal'
+
+	axis 'equal'
 	xlim([-1, 1]);
 	ylim([-0.8, 1.2]);
-    xlabel("x","interpreter","latex")
-    ylabel("y","interpreter","latex")
-    xticks([])
-    yticks([])
+	xlabel("x","interpreter","latex")
+	ylabel("y","interpreter","latex")
+	xticks([])
+	yticks([])
 
 end

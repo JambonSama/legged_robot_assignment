@@ -1,5 +1,7 @@
 % run the following code
-clear all
+clearvars
+close all
+clc
 load('sln_test.mat')
 
 q0 = [pi/6; -pi/3; 0];
