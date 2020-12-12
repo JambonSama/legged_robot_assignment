@@ -16,7 +16,6 @@ error_C = round(eval_C(q_test, dq_test) - C_test, 5);
 fprintf('error_C: \n');
 disp(error_C)
 
-
 error_M = round(eval_M(q_test) - M_test, 5);
 fprintf('error_M: \n');
 disp(error_M)

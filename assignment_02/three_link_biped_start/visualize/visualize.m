@@ -50,7 +50,7 @@ function visualize(q)
 	xlim([-0.8, 0.2]);
 	ylim([0, 1]);
 	xlabel("x","interpreter","latex")
-	ylabel("y","interpreter","latex")
+	ylabel("z","interpreter","latex")
 	xticks([])
 	yticks([])
 
