@@ -7,7 +7,7 @@ function [value,isterminal,direction] = event_func(t, y)
 q = y(1:3);
 dq = y(4:6);
 
-[~, z_swf, ~, ~] = kin_swf(q, dq);
+[~, z_swf, ~, dz_swf] = kin_swf(q, dq);
 value = z_swf + 0.01 * cos(q(1)) + 0.0001;
 isterminal = 1;
 direction = -1;
