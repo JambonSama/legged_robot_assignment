@@ -241,11 +241,11 @@ alpha=0:0.01:pi/4;
 T_lost=zeros(1,length(alpha));
 
 for i=1:length(alpha)
-    qm=[alpha(i), -alpha(i), 0];
-    [qp,dqp]=impact(qm,dqm);
-    [Tm, Vm] = eval_energy(qm,dqm);
-    [Tp, Vp] = eval_energy(qp,dqp);
-    T_lost(i) = (1-Tm/Tp)*100;
+	qm=[alpha(i), -alpha(i), 0];
+	[qp,dqp]=impact(qm,dqm);
+	[Tm, Vm] = eval_energy(qm,dqm);
+	[Tp, Vp] = eval_energy(qp,dqp);
+	T_lost(i) = (1-Tm/Tp)*100;
 end
 
 close all
