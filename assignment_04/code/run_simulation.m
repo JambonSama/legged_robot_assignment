@@ -9,5 +9,5 @@ num_steps = 10;
 
 default_parameters = control_hyper_parameters(num_steps);
 sln = solve_eqns(q0, dq0, num_steps, default_parameters);
-%%animate(sln);
-analyse(sln, default_parameters, true);
+%animate(sln);
+analyse(sln, default_parameters, false);

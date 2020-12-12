@@ -1,4 +1,4 @@
-function u = control(t, q, dq, q0, dq0, step_number, parameters)
+function u = control(q, dq, q0, dq0, parameters)
 % You may call control_hyper_parameters and desired_outputs in this function
 % you don't necessarily need to use all the inputs to this control function
 
@@ -73,6 +73,6 @@ u = u_t + u_h + u_swf;
 
 % saturate the output torque
 %u = [u1; u2];
-%u = max(min(u, 30), -30)
+%u = max(min(u, 30), -30);
 
 end

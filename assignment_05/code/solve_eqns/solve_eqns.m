@@ -24,8 +24,7 @@ sln.YE = {};
 
 
 for i = 1:num_steps
-    [T, Y, TE, YE] = ode45(@(t, y) eqns(t, y, y0, i, parameters), t0 + tspan, y0, options);
-    clear u1 u2;
+    [T, Y, TE, YE] = ode45(@(t, y) eqns(y, y0, parameters), t0 + tspan, y0, options);
     sln.T{i} = T;
     sln.Y{i} = Y;
     sln.TE{i} = TE;

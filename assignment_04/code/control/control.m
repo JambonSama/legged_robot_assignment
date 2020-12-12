@@ -17,6 +17,7 @@ u2 = -kp2*(q(2)+q(1)) - kd2*(dq(2)+dq(1));
 
 % saturate the output torque
 u = [u1; u2];
+
 u = max(min(u, 30), -30); 
 
 end

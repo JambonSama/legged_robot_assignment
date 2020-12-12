@@ -6,17 +6,22 @@ q = sln.Y{1,1}(:,1:3);
 dq = sln.Y{1,1}(:,4:end);
 t = sln.T{1,1};
 tstep = [sln.T{1,1}(1) sln.T{1,1}(end)];
+[x_h, ~, ~, ~] = kin_hip(q(end,:), dq(end,:));
+distance = x_h;
 
-
-for i=2:10
-    q = [q; sln.Y{1,i}(:,1:3)];
-    dq = [dq; sln.Y{1,i}(:,4:end)];
-    t = [t; sln.T{1,i}];
-    tstep = [tstep; sln.T{1,i}(1) sln.T{1,i}(end)];
+if size(sln.Y,2)>1
+    for i=2:size(sln.Y,2)
+        q = [q; sln.Y{1,i}(:,1:3)];
+        dq = [dq; sln.Y{1,i}(:,4:end)];
+        t = [t; sln.T{1,i}];
+        tstep = [tstep; sln.T{1,i}(1) sln.T{1,i}(end)];
+        [x_h, ~, ~, ~] = kin_hip(q(end,:), dq(end,:));
+        [x_b, ~, ~, ~] = kin_hip(q(end-size(sln.Y{1,i}(:,1:3),1)+1,:), dq(end-size(sln.Y{1,i}(:,1:3),1)+1,:));
+     distance = distance + x_h - x_b;
+    end
 end
-
+num_steps = i;
 step_number = 1/numel(t):(1/numel(t))*size(tstep,1):size(tstep,1);
-parameters = control_hyper_parameters(step_number);
 
 q0 = q(1,:);
 dq0 = dq(1,:);
@@ -34,15 +39,10 @@ u = zeros(numel(t),2);
 for i=1:numel(t)
     [x_swf(i), z_swf(i), dx_swf(i), dz_swf(i)] = kin_swf(q(i,:), dq(i,:));
     [x_h(i), z_h(i), dx_h(i), dz_h(i)] = kin_hip(q(i,:), dq(i,:));
-    u(i,:) = control(t(i), q(i,:), dq(i,:), q0, dq0, step_number, parameters);
+    u(i,:) = control(q(i,:), dq(i,:), q0, dq0, parameters);
 end
 
-% distance
-x_h = x_h+ abs(min(x_h));
-distance = cumsum(x_h);
-
-
-step_frequency = 1./t;
+step_frequency = num_steps./t(end);
 step_length = x_swf;
 
 
@@ -53,7 +53,7 @@ max_vel_foot = max(dx_swf(100:end));
 min_vel_foot = min(dx_swf(100:end));
 
 effort = 1/(2*length(t)*30).*sum(u(:,1).^2+u(:,2).^2);
-CoT = effort/(distance(end)-x_h(1));
+CoT = effort/distance;
 velocity = mean(dx_h);
 height = mean(z_h);
 
@@ -89,6 +89,8 @@ if to_plot
     title('Velocity vs time')
     
     % Step frequency vs step number
+    
+    
     
     % Torque vs time
     figure
