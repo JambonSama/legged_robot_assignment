@@ -5,20 +5,20 @@ function u = control(q, dq, q0, dq0, parameters)
 % Computation value
 B = eval_B();
 [~, ~, ~, l1, l2, l3, ~] = set_parameters();
-[x_h, z_h, dx_h, dz_h] = kin_hip(q, dq);
+[x_h, z_h, dx_h, ~] = kin_hip(q, dq);
 [x_t, z_t, dx_t, dz_t] = kin_top(q, dq);
-[x0_swf, z0_swf, dx0_swf, dz0_swf] = kin_swf(q0, dq0);
-[x_swf, z_swf, dx_swf, dz_swf] = kin_swf(q, dq);
+[x0_swf, ~, ~, ~] = kin_swf(q0, dq0);
+[x_swf, z_swf, ~, dz_swf] = kin_swf(q, dq);
 
 %% Hip task
 
 % Hip parameters
-speed_hip = parameters(1);
+speedx_hip = parameters(1);
 kdx_h = parameters(2); 
 
 % Task space projection Hip point
 J_h = [l1*cos(q(1)), 0, 0; -l1*sin(q(1)), 0, 0];
-f_h = [kdx_h*(speed_hip-dx_h); 0];
+f_h = [kdx_h*(speedx_hip-dx_h); 0];
 u_h = pinv(B)*J_h'*f_h;
 
 %% Top task
@@ -31,8 +31,8 @@ kdz_t = parameters(6);
 leaning_angle = parameters(7);
 
 % Computation ref value Top
-x_top_t = x_h + sin(leaning_angle);
-z_top_t = z_h + cos(leaning_angle);
+x_top_t = x_h + l3*sin(leaning_angle);
+z_top_t = z_h + l3*cos(leaning_angle);
 
 % Task space projection top point
 J_t = [l1*cos(q(1)), 0, l3*cos(q(3)); -l1*sin(q(1)), 0, -l3*sin(q(3))];
@@ -52,23 +52,13 @@ step_length = parameters(13);
 speed_swf = parameters(14);
 
 % Computation ref value Swing foot
-x_swf_tc = x0_swf:0.1:(x0_swf+step_length);
-z_swf_tc = -h/2*cos(2*pi/step_length*(x_swf_tc-x0_swf))+h/2;
-%dz_swf_tc = h/2*sin(2*pi/step_length*(x_swf_tc-x0_swf))*2*pi/step_length;
-dz_swf_tc = h/2*cos(pi/step_length*(x_swf_tc-x0_swf))*2*pi/step_length;
-swf_norm =zeros(numel(x_swf_tc),1);
-
-for i=1:numel(x_swf_tc)
-    swf_norm(i) = norm([x_swf z_swf]-[x_swf_tc(i) z_swf_tc(i)]);
-end
-[~, idx] = min(swf_norm);
-x_swf_t = x_swf_tc(idx);
-z_swf_t = z_swf_tc(idx);
-dz_swf_t = dz_swf_tc(idx);
+z_swf_t = -h/2 *cos(pi/step_length*(x_swf-x0_swf))+h/2;
+dz_swf_t = h/2*sin(pi/step_length*(x_swf-x0_swf));
 
 % Task space projection swing point
 J_swf = [l1*cos(q(1)), -l2*cos(q(2)), 0; -l1*sin(q(1)), l2*sin(q(2)), 0];
-f_swf = [kpx_s*(x_swf_t-x_swf)+kdx_s*(speed_swf-dx_swf); kpz_s*(z_swf_t-z_swf)+kdz_s*(dz_swf_t-dz_swf)];
+% f_swf = [kpx_s*(x_swf_t-x_swf)+kdx_s*(speed_swf-dx_swf); kpz_s*(z_swf_t-z_swf)+kdz_s*(dz_swf_t-dz_swf)];
+f_swf = [kpx_s*((x0_swf+step_length)-x_swf) + kdx_s*(speed_swf-dx_swf);kpz_s*(z_swf_t-z_swf)+kdz_s*(dz_swf_t-dz_swf)];
 u_swf = pinv(B)*J_swf'*f_swf;
 
 
@@ -77,6 +67,5 @@ u = u_t + u_h + u_swf;
 
 % saturate the output torque
 %u = [u1; u2];
-%u = max(min(u, 30), -30);
-
+%u = max(min(u, 30), -30)
 end

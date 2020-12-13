@@ -9,8 +9,10 @@ x0 = [q0; dq0; control_hyper_parameters];
 %gs = GlobalSearch('XTolerance',0.01,'MaxTime',1000);
 ms = MultiStart('UseParallel',true,'Display','iter');
 
-l = [-pi/3; -pi/3; -pi/4; -20; -20; -20; 0; -3; -2000; -1000; -2000; -1000; -pi/4; -2000; -1000; -2000; -1000; 0; 0.15; -5];
-u = [pi/3; pi/3; pi/3; 20; 20; 20; 2; 3; 2000; 1000; 2000; 1000; pi/4; 2000; 1000; 2000; 1000; 1; 0.6; 7];
+% l = [-pi/3; -pi/3; -pi/4; -20; -20; -20; 0; 0; 0; -1000; -2000; -1000; -pi/4; -2000; -1000; -2000; -1000; 0; 0.15; -5];
+% u = [pi/3;   pi/3;  pi/3;  20;  20;  20; 5; 3; 2000; 1000; 2000; 1000; pi/4; 2000; 1000; 2000; 1000; 1; 0.6; 7];
+l = [-pi/3; -pi/3; -pi/3; -20; -20; -20;  0;     0;    0;    0;    0;    0;    0;    0;     0;    0;   0;    0;     0.05; 0];
+u = [ pi/3;  pi/3;  pi/3;  20;  20;  20; 10;  5000; 5000; 5000; 5000; 5000; pi/3; 5000;  5000; 5000; 5000; 0.25;     1;  10];
 
 % use fminsearch and optimset to control the MaxIter
 options = optimoptions(@fmincon,'Algorithm','interior-point');

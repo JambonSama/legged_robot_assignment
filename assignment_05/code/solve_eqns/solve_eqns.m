@@ -44,7 +44,6 @@ for i = 1:num_steps
     [q_p, dq_p] = impact(q_m, dq_m);
     
     y0 = [q_p; dq_p];
-    kin_swf(y0)
     t0 = T(end);
     
 end

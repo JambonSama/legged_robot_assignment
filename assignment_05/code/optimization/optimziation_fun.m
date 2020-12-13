@@ -23,7 +23,7 @@ effort = results(3);
 CoT = results(4);
 height = results(5);
 
-objective_value = 20*CoT -2000*(height-0.35)-10*distance;
+objective_value = 20*CoT - 10*distance;
 
 % handle corner case when model walks backwards (e.g., objective_value =
 % 1000)
