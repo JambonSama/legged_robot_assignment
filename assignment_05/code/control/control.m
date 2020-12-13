@@ -8,7 +8,7 @@ B = eval_B();
 [x_h, z_h, dx_h, ~] = kin_hip(q, dq);
 [x_t, z_t, dx_t, dz_t] = kin_top(q, dq);
 [x0_swf, ~, ~, ~] = kin_swf(q0, dq0);
-[x_swf, z_swf, ~, dz_swf] = kin_swf(q, dq);
+[x_swf, z_swf, dx_swf, dz_swf] = kin_swf(q, dq);
 
 %% Hip task
 
@@ -48,23 +48,24 @@ kdx_s = parameters(9);
 kpz_s = parameters(10);
 kdz_s = parameters(11);
 h = parameters(12);
-step_length = parameters(13);
+step_length = 2*l2*sin(abs(q0(2)));%parameters(13);
 speed_swf = parameters(14);
 
 % Computation ref value Swing foot
-z_swf_t = -h/2 *cos(pi/step_length*(x_swf-x0_swf))+h/2;
-dz_swf_t = h/2*sin(pi/step_length*(x_swf-x0_swf));
+z_swf_t = -h/2*cos(2*pi/q0(2)*q(2))+h/2;
+dz_swf_t = h/2*2*pi/(q0(2))*sin(2*pi/q0(2)*q(2))*dq(2);
+
+x_swf_t = step_length/(-2*q0(2))*q(2);
+dx_swf_t = step_length/(-2*q0(2))*dq(2);
 
 % Task space projection swing point
 J_swf = [l1*cos(q(1)), -l2*cos(q(2)), 0; -l1*sin(q(1)), l2*sin(q(2)), 0];
-% f_swf = [kpx_s*(x_swf_t-x_swf)+kdx_s*(speed_swf-dx_swf); kpz_s*(z_swf_t-z_swf)+kdz_s*(dz_swf_t-dz_swf)];
-f_swf = [kpx_s*((x0_swf+step_length)-x_swf) + kdx_s*(speed_swf-dx_swf);kpz_s*(z_swf_t-z_swf)+kdz_s*(dz_swf_t-dz_swf)];
+f_swf = [kpx_s*(x_swf_t-x_swf) + kdx_s*(dx_swf_t-dx_swf);kpz_s*(z_swf_t-z_swf)+kdz_s*(dz_swf_t-dz_swf)];
 u_swf = pinv(B)*J_swf'*f_swf;
 
 
 %% Compute command
 u = u_t + u_h + u_swf;
-
 % saturate the output torque
 %u = [u1; u2];
 %u = max(min(u, 30), -30)
