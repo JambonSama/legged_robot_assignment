@@ -141,15 +141,15 @@ function results = analyse(sln, parameters, to_plot)
 		plot(t, dx_h)
 		grid on
 		xlabel("$t$ [s]", "interpreter", "latex")
-		ylabel("$\dot{x}_h$ [m]", "interpreter", "latex")
-% 		saveas(gcf, path+"a04_dx_h","epsc")
+		ylabel("$\dot{x}_h$ [m/s]", "interpreter", "latex")
+ 		saveas(gcf, path+"a04_dx_h","epsc")
 
 		figure
 		plot(1:step_num, bar_dx_h, ".-")
 		grid on
 		xlabel("$t$ [s]", "interpreter", "latex")
-		ylabel("$\bar{\dot{x}}_h$ [m]", "interpreter", "latex")
-% 		saveas(gcf, path+"a04_average_dx_h","epsc")
+		ylabel("$\bar{\dot{x}}_h$ [m/s]", "interpreter", "latex")
+ 		saveas(gcf, path+"a04_average_dx_h","epsc")
 
 		% Step frequency vs step number
 		figure
