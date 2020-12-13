@@ -18,32 +18,60 @@ When optimizing on the objective function~\ref{eq::virtual_constraints_objective
 	\alpha &= 0.1911
 \end{align*}
 
+The state-space plot displayed on Figure~\ref{img::virtual_constraints_state_space} are a great way to assess whether the gait is stable, and after how long.
+Indeed, on Figure~\ref{img::virtual_constraints_state_space}, we can observe that the first two steps are not in a steady-state yet.
+Only starting from step three and onward (out of ten steps) is the gait stable, and that is illustrated by the state-space plots looping back on itself.
+Even like so, the third step is not quite steady for the top link of the robot before the fourth step.
+
 \begin{figure}[H]
 	\begin{subfigure}[h]{0.495\textwidth}
 		\begin{center}
 			\includegraphics[width=\textwidth]{a04_state_space_q1_optimized}
 			\caption{$q_1$ state-space plot}
-%			\label{fig::img1}
 		\end{center}
 	\end{subfigure}
 	\begin{subfigure}[h]{0.495\textwidth}
 		\begin{center}
 			\includegraphics[width=\textwidth]{a04_state_space_q2_optimized}
-			\caption{$q_1$ state-space plot}
-%			\label{fig::img2}
+			\caption{$q_2$ state-space plot}
 		\end{center}
 	\end{subfigure}
-
+	
 	\begin{subfigure}[h]{0.495\textwidth}
 		\begin{center}
 			\includegraphics[width=\textwidth]{a04_state_space_q3_optimized}
-			\caption{$q_1$ state-space plot}
-%			\label{fig::img3}
+			\caption{$q_3$ state-space plot}
 		\end{center}
 	\end{subfigure}
 	\caption{State-space plot for the three generalized coordinates.}
-%	\label{img::global_label}
+	\label{img::virtual_constraints_state_space}
 \end{figure}
+
+Then, when looking at the position of the hip along time on Figure~\ref{fig::virtual_constraints_hip_position}, we can observe two things:
+
+\begin{itemize}
+	\item the stability of the gait as assessed from the state-space plots is confirmed by those plots: the first two steps are not in steady-state, but the subsequent steps are quite periodic,
+	\item the hip oscillates vertically, while advancing linearly horizontally.
+\end{itemize}
+
+\begin{figure}[H]
+	\begin{subfigure}[h]{0.8\textwidth}
+		\begin{center}
+			\includegraphics[width=\textwidth]{a04_x_h}
+			\caption{horizontal position of the hip}
+		\end{center}
+	\end{subfigure}
+	\begin{subfigure}[h]{0.8\textwidth}
+		\begin{center}
+			\includegraphics[width=\textwidth]{a04_z_h}
+			\caption{vertical position of the hip}
+		\end{center}
+	\end{subfigure}
+	\caption{Position of the hip as a function of time.}
+	\label{fig::virtual_constraints_hip_position}
+\end{figure}
+
+
 
 \begin{figure}[H]
 	\begin{subfigure}[h]{0.495\textwidth}
@@ -61,21 +89,8 @@ When optimizing on the objective function~\ref{eq::virtual_constraints_objective
 	\caption{Command angles in function of time for both actuators.}
 \end{figure}
 
-\begin{figure}[H]
-	\begin{subfigure}[h]{0.8\textwidth}
-		\begin{center}
-			\includegraphics[width=\textwidth]{a04_x_h}
-			\caption{horizontal position of the hip}
-		\end{center}
-	\end{subfigure}
-	\begin{subfigure}[h]{0.8\textwidth}
-		\begin{center}
-			\includegraphics[width=\textwidth]{a04_z_h}
-			\caption{vertical position of the hip}
-		\end{center}
-	\end{subfigure}
-	\caption{Position of the hip as a function of time.}
-\end{figure}
+
+
 
 \begin{figure}[H]
 	\begin{subfigure}[h]{0.495\textwidth}

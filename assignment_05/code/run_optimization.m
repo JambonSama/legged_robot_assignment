@@ -1,4 +1,7 @@
-clc; clear; close all;
+clearvars
+close all
+clc
+
 %% optimize
 % optimize the initial conditions and controller hyper parameters
 q0 = [pi/9; -pi/9; 0];
@@ -6,7 +9,7 @@ dq0 = [0; 0; 8];
 default_parameters = control_hyper_parameters;
 x0 = [q0; dq0; control_hyper_parameters];
 
-%gs = GlobalSearch('XTolerance',0.01,'MaxTime',1000);
+% gs = GlobalSearch('XTolerance',0.01,'MaxTime',1000);
 ms = MultiStart('UseParallel',true,'Display','iter');
 
 l = [-pi/3; -pi/3; -pi/3; -20; -20; -20;  0;   0;   0;  0;   0;  0;    0;   0;   0;   0;  0;    0; 0.5];
@@ -15,15 +18,13 @@ u = [ pi/3;  pi/3;  pi/3;  20;  20;  20; 10;  60; 500; 60; 500; 60; pi/3; 500;  
 % use fminsearch and optimset to control the MaxIter
 options = optimoptions(@fmincon,'Algorithm','interior-point');
 
-problem = createOptimProblem('fmincon','x0',x0,'objective', @optimziation_fun,'lb',l,'ub',u,'options',options);
-%[x,fming,flagg,outptg,manyminsg] = run(gs,problem);
+problem = createOptimProblem('fmincon','x0',x0,'objective', @optimization_fun,'lb',l,'ub',u,'options',options);
+% [x,fming,flagg,outptg,manyminsg] = run(gs,problem);
 [x,fval,eflag,output,manymins] = run(ms,problem,200);
 
 % opti = fminsearch(@optimziation_fun,x0,options);
 
-
-%% simulate solution
-
+%% Simulate solution
 % extract parameters
 q0 = x(1:3);
 dq0 = x(4:6);

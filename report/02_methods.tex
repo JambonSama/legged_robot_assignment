@@ -521,17 +521,17 @@ The optimization problem is defined as the objective function $f$ of the decisio
 
 \begin{align}
 	\label{eq::virtual_constraints_objective_fun}
-	f(p) &= w_1 | \dot{x}_\text{hip} - \dot{\bar{x}}_\text{hip}(p) | + w_2 \text{CMT}(p)
+	f(p) &= w_1 | \dot{x}_\text{hip d} - \bar{\dot{x}}_\text{hip}(p) | + w_2 \text{CMT}(p)
 \end{align}
 
-where $\dot{x}_\text{hip}$ is the desired horizontal hip velocity, $\bar{\dot{x}}_\text{hip} (p)$ the simulated average horizontal velocity, and $w_i$ weights.
+where $\dot{x}_\text{hip d}$ is the desired horizontal hip velocity, $\bar{\dot{x}}_\text{hip} (p)$ the simulated average horizontal velocity, and $w_i$ weights.
 
 \vspace{\baselineskip}
 
 The CMT, Cost of Mechanical Transport is defined through the effort $U$ like so:
 
 \begin{align*}
-	\text{CMT} &= \dfrac{U}{x_\text{hip}(T)-x_\text{hip}(1)} \\
+	\text{CMT} &= \dfrac{U}{x_\text{h}(T)-x_\text{h}(1)} \\
 	U &= \dfrac{1}{2TU_\text{max}} \sum_{i=1}^{T} \left( u_{1}^{2} (i) + u_{2}^{2} (i) \right) \\
 	U_\text{max} &= \SI{30}{\newton\meter}
 \end{align*}
