@@ -5,7 +5,7 @@
 %%
 function animate(sln)
 
-    % v = VideoWriter("virtual_constraints","Uncompressed AVI");
+    % v = VideoWriter("virtual_model","Uncompressed AVI");
     % open(v)
 	figure();
 	skip = 10;
