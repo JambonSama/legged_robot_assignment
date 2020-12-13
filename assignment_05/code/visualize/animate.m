@@ -20,7 +20,7 @@ function animate(sln)
 			pause(0.002);
 			visualize(q, r0);
 			hold off
-            % A = getframe;
+            % A = getframe(gcf);
             % writeVideo(v,A)
 		end
 		[x0, ~, ~, ~] = kin_swf(q);

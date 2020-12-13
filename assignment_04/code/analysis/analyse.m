@@ -58,13 +58,6 @@ function results = analyse(sln, parameters, to_plot)
 	x_h = x_h + abs(min(x_h));
 	distance = cumsum(x_h);
 
-	% step_frequency = 1./t;
-	% step_length = x_swf;
-	% max_vel_hip = max(dx_h(100:end)); %Ignore first 100 samples
-	% min_vel_hip = min(dx_h(100:end));
-	% max_vel_foot = max(dx_swf(100:end));
-	% min_vel_foot = min(dx_swf(100:end));
-
 	effort = 1/(2*length(t)*30).*sum(u(:,1).^2+u(:,2).^2);
 	CoT = effort/(distance(end)-x_h(1));
 	velocity = mean(dx_h); % mean(dx_h(t_step(2,1)+1:end));
@@ -81,7 +74,7 @@ function results = analyse(sln, parameters, to_plot)
 		ylabel("$x_{h}$ [m]", "interpreter", "latex")
 		fig1 = gcf;
 		fig1.Position = [1405 853 630 472/2];
- 		% saveas(fig1, path+"a04_x_h","epsc")
+		% saveas(fig1, path+"a04_x_h","epsc")
 
 		figure
 		plot(t, z_h)
@@ -90,7 +83,7 @@ function results = analyse(sln, parameters, to_plot)
 		ylabel("$z_{h}$ [m]", "interpreter", "latex")
 		fig2 = gcf;
 		fig2.Position = [1405 853 630 472/2];
- 		% saveas(fig2, path+"a04_z_h","epsc")
+		% saveas(fig2, path+"a04_z_h","epsc")
 
 		% plot dx_h and average dx_h
 		figure
@@ -98,18 +91,18 @@ function results = analyse(sln, parameters, to_plot)
 		grid on
 		xlabel("$t$ [s]", "interpreter", "latex")
 		ylabel("$\dot{x}_{h}$ [m/s]", "interpreter", "latex")
-		fig3 = gcf
+		fig3 = gcf;
 		fig3.Position = [1405 853 630/2 472/2];
- 		% saveas(gcf, path+"a04_dx_h","epsc")
+		% saveas(gcf;, path+"a04_dx_h","epsc")
 
 		figure
 		plot(1:step_num, bar_dx_h, ".-")
 		grid on
 		xlabel("$t$ [s]", "interpreter", "latex")
 		ylabel("$\bar{\dot{x}}_{h}$ [m/s]", "interpreter", "latex")
-		fig4 = gcf
+		fig4 = gcf;
 		fig4.Position = [1405 853 630/2 472/2];
- 		% saveas(gcf, path+"a04_average_dx_h","epsc")
+		% saveas(gcf;, path+"a04_average_dx_h","epsc")
 
 		% Step frequency vs step number
 		figure
@@ -117,18 +110,18 @@ function results = analyse(sln, parameters, to_plot)
 		grid on
 		xlabel("Step number", "interpreter", "latex")
 		ylabel("$f$ [m]", "interpreter", "latex")
-		fig5 = gcf
+		fig5 = gcf;
 		fig5.Position = [1405 853 630/2 472/2];
- 		% saveas(gcf, path+"a04_step_frequency","epsc")
+		% saveas(gcf;, path+"a04_step_frequency","epsc")
 
 		figure
 		plot(2:step_num, lambda, ".-")
 		grid on
 		xlabel("Step number", "interpreter", "latex")
 		ylabel("$\lambda$ [s]", "interpreter", "latex")
-		fig6 = gcf
+		fig6 = gcf;
 		fig6.Position = [1405 853 630/2 472/2];
- 		% saveas(gcf, path+"a04_step_lambda","epsc")
+		% saveas(gcf;, path+"a04_step_lambda","epsc")
 
 		% Torque vs time
 		figure
@@ -136,18 +129,18 @@ function results = analyse(sln, parameters, to_plot)
 		grid on
 		xlabel("$t$ [s]", "interpreter", "latex")
 		ylabel("$u_1$ [N$\cdot$m]", "interpreter", "latex")
-		fig7 = gcf
+		fig7 = gcf;
 		fig7.Position = [1405 853 630/2 472/2];
- 		% saveas(gcf, path+"a04_control_torques_u1_optimized","epsc")
+		% saveas(gcf;, path+"a04_control_torques_u1_optimized","epsc")
 
 		figure
 		plot(t, u(:,2))
 		grid on
 		xlabel("$t$ [s]", "interpreter", "latex")
 		ylabel("$u_2$ [N$\cdot$m]", "interpreter", "latex")
-		fig8 = gcf
+		fig8 = gcf;
 		fig8.Position = [1405 853 630/2 472/2];
- 		% saveas(gcf, path+"a04_control_torques_u2_optimized","epsc")
+		% saveas(gcf;, path+"a04_control_torques_u2_optimized","epsc")
 
 		% Plot angle speed vs angle
 		figure
@@ -155,27 +148,27 @@ function results = analyse(sln, parameters, to_plot)
 		grid on
 		xlabel("$q_1$", "interpreter", "latex")
 		ylabel("$\dot{q}_1$", "interpreter", "latex")
-		fig9 = gcf
+		fig9 = gcf;
 		fig9.Position = [1405 853 630/2 472/2];
- 		% saveas(gcf, path+"a04_state_space_q1_optimized","epsc")
+		% saveas(gcf;, path+"a04_state_space_q1_optimized","epsc")
 
 		figure
 		plot(q(:,2), dq(:,2))
 		grid on
 		xlabel("$q_2$", "interpreter", "latex")
 		ylabel("$\dot{q}_2$", "interpreter", "latex")
-		fig10 = gcf
+		fig10 = gcf;
 		fig10.Position = [1405 853 630/2 472/2];
- 		% saveas(gcf, path+"a04_state_space_q2_optimized","epsc")
+		% saveas(gcf;, path+"a04_state_space_q2_optimized","epsc")
 
 		figure
 		plot(q(:,3), dq(:,3))
 		grid on
 		xlabel("$q_3$", "interpreter", "latex")
 		ylabel("$\dot{q}_3$", "interpreter", "latex")
-		fig11 = gcf
+		fig11 = gcf;
 		fig11.Position = [1405 853 630/2 472/2];
- 		% saveas(gcf, path+"a04_state_space_q3_optimized","epsc")
+		% saveas(gcf;, path+"a04_state_space_q3_optimized","epsc")
 
 		% Normalized mean effort
 		disp(["Normalized mean effort = ",num2str(effort)])
