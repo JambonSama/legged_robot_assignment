@@ -2,19 +2,23 @@
 
 \subsection{Modelization}
 
-In engineering at large (not just robotics), the idea of modelization is to abstract the (real physical) system of interest into a mathematical object that can be used, calculated upon, simulated upon.
-Examples include modelizing the working of motor by an electrical circuit; modelizing the working of a pump by a fluid circuit; modelizing a plant by control system, etc$\dots$
-The benefits are two-fold: the process of modelizing forces the engineer to understand the system, and what of the system is relevant to the engineer's research; and upon completion, it also allows the engineer to apply mathematical tools to its system, like control design, simulation, etc$\dots$
+In engineering at large (not just robotics), the motivation for modelization is to abstract the (real physical) system of interest into a mathematical object that can be used, calculated upon, and simulated upon.
+Examples include modelizing the working of motor by an electrical circuit; modelizing the working of a pump by a fluid circuit; modelizing a plant by a control system, etc$\dots$
+
+\vspace{\baselineskip}
+
+The benefits are two-fold.
+The process of modelizing forces the engineer to understand the system, and what parts of the system are relevant to the engineer's work; and upon completion, it also allows the engineer to apply mathematical tools to its system, like control design, simulation, etc$\dots$
 
 \vspace{\baselineskip}
 
 In the field of robotics, modelization's end product are the kinematics and dynamics of the robot.
-That modelization doesn't have to be done from scratch, because tools are at disposal, that help both in modelizing the robot, and in unifying its representation (like the urdf, for example).
-Nonetheless, for this project, the modelization is done from scratch for academic value.
+That modelization doesn't have to be done from scratch, because tools are at disposal, that help both in modelizing the robot, and in unifying its representation (like the urdf format, for example).
+However, for this project, the modelization is done from scratch for academic value.
 
 \vspace{\baselineskip}
 
-The starting point is the Figure~\ref*{fig::model}, because in our case, there is no real robot, it was just decided to work on a generic three-link 2D biped model.
+The starting point is the Figure~\ref*{fig::model}, because in our case, there is no physical robot, only a theoretical generic three-link 2D biped model.
 
 \subsubsection{Kinematics}
 
@@ -46,11 +50,10 @@ A quick visualization allows to assess visually that the kinematics are correct:
 
 \begin{figure}[H]
 	\begin{center}
-		\includegraphics[angle=0,width=0.5\textwidth]{assignment_02_visualization}
+		\includegraphics[angle=0,width=0.5\textwidth]{a02_visualization}
 	\end{center}
 	\caption{Visualization of the kinematics of the three-link 2D biped model.}
 \end{figure}
-
 
 \subsubsection{Dynamics}
 
@@ -138,11 +141,11 @@ Then, the control matrix $\mathbf{B}$ is computed. The robot is commanded throug
 			\end{scope}
 		\end{tikzpicture}
 	\end{center}
-	\caption{Representation of the three-link 2D biped model with the angle commands.}
+	\caption{Representation of the three-link 2D biped model with its generalized coordinates $\mathbf{q}$ and command angles $\mathbf{u}$.}
 	\label{fig::model_with_command}
 \end{figure}
 
-This means that the model is underactuated, because there is more DOFs than actuated joints.
+This means that the model is underactuated, because there is more DOFs ($q_1$, $q_2$, $q_3$) than actuated joints ($u_1$, $u_2$).
 
 \vspace{\baselineskip}
 
@@ -169,7 +172,7 @@ The obtained matrices are:
 \end{align*}
 
 It is interesting to notice that the mass matrix $\mathbf{M}$ corresponds to the Jacobian of the total kinetic energy $T$ with respect to the generalized coordinates.
-That is a normal result, since kinetic energy is derived from moving masses.% (\textbf{assignment 1 question}).
+This result is to be expected, since kinetic energy is derived from moving masses.% (\textbf{assignment 1 question}).
 
 \subsubsection{Impact map}
 
@@ -263,7 +266,7 @@ with $m=m_1=m_2$, and thus both $\mathbf{q}_p$ and $\mathbf{\dot{q}}_p$ can be c
 
 	\begin{figure}[H]
 		\begin{center}
-			\includegraphics[angle=0,width=0.7\textwidth]{kinetic_energy_loss_along_leg_angle}
+			\includegraphics[angle=0,width=0.7\textwidth]{a02_kinetic_energy_loss_along_leg_angle}
 		\end{center}
 		\caption{Percentage of kinetic energy loss as a function of leg angle.}
 	\end{figure}
@@ -320,20 +323,22 @@ The numerical solution is computed by \verb|ode45|.
 \subsubsection{Animation}
 % animate.m (in the “visualize” folder)
 
-Then, the idea is to extract join coordinates $\mathbf{q}$ from the solution computed by \verb|ode45| as described by Equation~\ref{eq::angle_solution} (the numerical integration provides a solution vector for $\mathbf{y}$).
+Then, the idea is to extract join coordinates $\mathbf{q}$ from the solution computed by \verb|ode45| as described by Equation~\ref{eq::angle_solution} (the numerical integration provides a solution vector for $\mathbf{y}$), in order to obtain a graphical animation of the three-link 2D biped model.
 
 \paragraph{Assignment 3 questions}
 
 \begin{enumerate}
 	\item \textit{In the animations, what does a real-time factor of 1 mean? How about a real-time factor less than 1?}
 
-	Real time factor is the actual duration of the simulations (obtained from \verb|sln|) divided by the time it takes for MATLAB to animate the simulations (obtained from \verb|t_anim|). With a real-time factor of 1 or greater, the animation is done in "real-time".
-	With a real-time factor lesser than 1, the computation is more slow than real-time".
+	The real time factor is the actual duration of the simulations (obtained from \verb|sln|) divided by the time it takes for MATLAB to animate the simulations (obtained from \verb|t_anim|).
+	With a real-time factor of 1 or greater, the animation is done in "real-time".
+	With a real-time factor lesser than 1, the computation is more slow than "real-time".
 	\verb|real_time_factor| is a non-null positive value, but having one greater than 1 has no use, because even when the computation happens faster, the displaying doesn't.
 
 	\item \textit{How does "skip" in animate.m effect the real-time factor and the speed of the animation?}
 
-	Skip allow to skip a few step, so the animation can go faster. It affects the real time factor because less steps are computed for the same time vector, so that it improves the real time factor.
+	Skip allow to skip a few step, so the animation can go faster.
+	It affects the real time factor because less steps are computed for the same time vector, so that it improves the real time factor.
 
 	\item \textit{What is the role of} \verb|r0| \textit{in animate.m?}
 
@@ -343,23 +348,29 @@ Then, the idea is to extract join coordinates $\mathbf{q}$ from the solution com
 \subsubsection{Numerical integration}
 % numerical integration.zip
 
-Numerical integration is handy tool for engineers to calculate a number of numerical values, and amongst others, numerical solutions to differential equations. However handy, numerical integration as a field as its subtleties, and solutions should be carefully examined before being applied to problems (especially stiff problems). Let's discuss some of the more common numerical integration algorithms.
+Numerical integration is handy tool for engineers to calculate a number of numerical values, and amongst others, numerical solutions to differential equations. However handy, numerical integration as a field as its subtleties, and solutions should be carefully examined before being applied to problems (especially stiff problems).
+Let's discuss some of the more common numerical integration algorithms.
 
 \paragraph{Explicit Euler}
 
 \begin{enumerate}
 	\item \textit{Explain the meaning of the state-space plot. What should be the expected state-space plot?}
 
-	The state-space plot displays the position against the speed. Because the analytical solution for the position is sinusoidal, the speed is also sinusoidal, albeit with a phase shift of \SI{\pi/2}{\radian}, so that the state-space should display a circle. The fact that it displays an outward spirals shows that the solution diverges.
+	The state-space plot displays the position against the speed.
+	Because the analytical solution for the position is sinusoidal, the speed is also sinusoidal, albeit with a phase shift of \SI{\pi/2}{\radian}, so that the state-space should display a circle.
+	The fact that it displays an outward spirals shows that the solution diverges.
+	Generally speaking, a state-space plot that is closed (or ends up closed) describes a stable system or solution, while a state-space plot that is not closed, describes a diverging system or solution.
 
 	\item \textit{Why does the numerical solution diverges from the true solution?}
-	
-	The explicit Euler numerical integration is a first order approximation of the Taylor series. Here, the position is a cosine, and so the speed is a sine. The absolute value of the first order Taylor approximation of a sine ($\sin x \sim x$) is always bigger than the approximated value (that is, $|x|>|\sin x|$), so that the state-space plot cannot be a circle, and in fact diverges into a spiral.
+
+	The explicit Euler numerical integration is a first order approximation of the Taylor series.
+	Here, the position is a cosine, and so the speed is a sine.
+	The absolute value of the first order Taylor approximation of a sine ($\sin x \sim x$) is always bigger than the approximated value (that is, $|x|>|\sin x|$), so that the state-space plot cannot be a circle, and in fact diverges into a spiral.
 
 	\item \textit{What can you do to better approximate the actual solution with this method?}
-	
+
 	When the step size $dt$ is reduced, the error between an analytical solution and the numerical approximation diminishes:
-	
+
 	\begin{figure}[H]
 		\begin{subfigure}[h]{\textwidth}
 			\begin{center}
@@ -367,7 +378,7 @@ Numerical integration is handy tool for engineers to calculate a number of numer
 				\caption{$dt=0.1$}
 			\end{center}
 		\end{subfigure}
-		
+
 		\begin{subfigure}[h]{\textwidth}
 			\begin{center}
 				\includegraphics[angle=0,width=0.7\textwidth]{num_int_exp_euler_001}
@@ -384,11 +395,13 @@ Numerical integration is handy tool for engineers to calculate a number of numer
 
 \begin{enumerate}
 	\item \textit{Is this method stable and when?}
-	
-	This method is stable for complex roots of the characteristic equation within the circle defined by $s>-\dfrac{2}{dt}$. For real roots, the solution is always stable. In this particular instance, the state-space plot is closed, so the solution is stable.
-	
+
+	This method is stable for complex roots of the characteristic equation within the circle defined by $s>-\dfrac{2}{dt}$.
+	For real roots, the solution is always stable.
+	In this particular instance, the state-space plot is closed, so the solution is stable.
+
 	\item \textit{What about the accuracy of the obtained solution?}
-	
+
 	The semi-implicit Euler numerical method is a first-order integrator, just like the explicit Euler method, but the use of $u(t_0+dt)$ instead of $u(t_0)$ in the equation for $y(t_0+dt)$ makes it more accurate than the explicit Euler method, as can be assessed visually when comparing (for fixed parameters):
 
 	\begin{figure}[H]
@@ -398,7 +411,7 @@ Numerical integration is handy tool for engineers to calculate a number of numer
 				\caption{explicit Euler method}
 			\end{center}
 		\end{subfigure}
-		
+
 		\begin{subfigure}[h]{\textwidth}
 			\begin{center}
 				\includegraphics[angle=0,width=0.7\textwidth]{num_int_semi_imp_euler_001}
@@ -413,11 +426,11 @@ Numerical integration is handy tool for engineers to calculate a number of numer
 
 \begin{enumerate}
 	\item \textit{What is the error of this method?}
-	
+
 	The LTE of RK4 is $O(dt^4)$, and thus the GTE is $O(dt^3)$.
-	
+
 	\item \textit{Do you expect the solution to diverge?}
-	
+
 	The state-space plot is closed, so the solution doesn't diverge:
 	\begin{figure}[H]
 		\begin{center}
@@ -431,9 +444,9 @@ Numerical integration is handy tool for engineers to calculate a number of numer
 
 \begin{enumerate}
 	\item \textit{Change the density of the time points in np.linspace. What do you observe?}
-	
+
 	When the density of points increases, the solution gains in temporal resolution.
-	
+
 	\begin{figure}[H]
 		\begin{subfigure}[h]{\textwidth}
 			\begin{center}
@@ -441,7 +454,7 @@ Numerical integration is handy tool for engineers to calculate a number of numer
 				\caption{$dt=0.2$}
 			\end{center}
 		\end{subfigure}
-		
+
 		\begin{subfigure}[h]{\textwidth}
 			\begin{center}
 				\includegraphics[angle=0,width=0.7\textwidth]{num_int_odeint_005}
@@ -450,12 +463,160 @@ Numerical integration is handy tool for engineers to calculate a number of numer
 		\end{subfigure}
 		\cprotect\caption{Numerical and analytical solutions and state-space plot to $m y'' + d y' + k y =0$ with \verb|odeint| from \verb|SciPy|.}
 	\end{figure}
-	
+
 	\item \textit{Do you expect the solution to diverge?}
-	
+
 	The state-space plot is circular, so the solution doesn't diverge.
-	
+
 	\item \textit{Which algorithms are supported by} \verb|odeint|\textit{?}
-	
+
 	\verb|odeint| uses the LSODA algorithm~\cite{hindmarsh}, which switches automatically between the BDF (stiff) method and the Adams (non-stiff) method, so that the integration is suited to the problem.
 \end{enumerate}
+
+\subsection{Control and optimization}
+
+This design of a controller and its optimization is the third step of control design pipeline. The implementation of three controllers were attempted, with various degrees of success.
+The first is the virtual constraints controller, the second, a controller based on reinforcement learning, and the third, a virtual model controller using task space projection.
+
+\subsubsection{Virtual constraints controller}
+
+The first controller designed is a virtual constraints controller.
+As indicated by the name, it makes use of constraints that are virtual, and defined mathematically.
+Here, two constraints are defined, $y_1$ and $y_2$.
+They are a function of the model's coordinates, and represent conditions that helps producing a stable gait.
+Thus, the goal is to cancel them by closing the loop with a PD controller.
+On Figure~\ref{fig::model_with_command}, it can be seen that the model is under-actuated.
+$u_1$ can control both the torso ($q_3$ and $q_1$) and stance foot, while $u_2$ can control both the torso and swing foot ($q_3$ and $q_2$).
+Thus a choice has to made about which generalized coordinates are controlled directly, and which is free to follow the dynamics of the model.
+Here it is chosen that $u_1$ directly controls the torso, and indirectly the stance foot, while $u_2$ directly controls the swing foot:
+
+\begin{align*}
+	y_1 &= q_3 - \alpha \\
+	y_2 &= -q_2-q_1
+\end{align*}
+
+where $\alpha$ is the desired lean angle.
+
+The first constraint helps constraining the lean angle to the \textit{desired} lean angle ($q_3\sim\alpha$).
+
+The second constraint helps in keeping the swing and stance leg as balanced / vertically symmetrical as possible ($q_1=-q_2$).
+
+When differentiating with respect to time, it gives:
+
+\begin{align*}
+	\dot{y}_1 &= \dot{q}_3 \\
+	\dot{y}_2 &= -\dot{q}_2-\dot{q}_1
+\end{align*}
+
+And thus a PD controller is expressed like so:
+
+\begin{align*}
+	u_1 &= k_{P1}y_1 + k_{D1} \dot{y}_1 \\
+	u_2 &= k_{P2}y_2 + k_{D2} \dot{y}_2
+\end{align*}
+
+
+
+The optimization problem is defined as the objective function $f$ of the decision variables $p$ chosen amongst the model parameters:
+
+\begin{align}
+	\label{eq::virtual_constraints_objective_fun}
+	f(p) &= w_1 | \dot{x}_\text{hip} - \dot{\bar{x}}_\text{hip}(p) | + w_2 \text{CMT}(p)
+\end{align}
+
+where $\dot{x}_\text{hip}$ is the desired horizontal hip velocity, $\bar{\dot{x}}_\text{hip} (p)$ the simulated average horizontal velocity, and $w_i$ weights.
+
+\vspace{\baselineskip}
+
+The CMT, Cost of Mechanical Transport is defined through the effort $U$ like so:
+
+\begin{align*}
+	\text{CMT} &= \dfrac{U}{x_\text{hip}(T)-x_\text{hip}(1)} \\
+	U &= \dfrac{1}{2TU_\text{max}} \sum_{i=1}^{T} \left( u_{1}^{2} (i) + u_{2}^{2} (i) \right) \\
+	U_\text{max} &= \SI{30}{\newton\meter}
+\end{align*}
+
+The optimizer goal is to minimize the objective function over the decision variables:
+
+\begin{align*}
+	&\underset{p}{\min} f(p)
+\end{align*}
+
+while managing the competing aspects of the terms (minimizing the CMT implies decreasing the simulated velocity), as well as achieving appropriate gaits (mathematical optimization doesn't always lead to solutions that make sense in a concrete, physical setup).
+
+\subsubsection{Reinforcement learning controller}
+
+The second attempt was at a reinforcement learning controller.
+
+Reinforcement Learning (RL) is one of the three basic machine learning paradigms alongside supervised and unsupervised learning.
+RL can be used to  virtually train a controller to achieve a certain goal.
+
+\vspace{\baselineskip}
+
+By defining an environment in which a robot can pursue a certain set of motions limited by the physics, and guided by a reward function chosen to induce certain behaviours for the robot, an agent tries to optimize a set of inputs in order to maximize the reward, as described on Figure~\ref{fig::rl_workflow}.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[angle=0,width=0.6\textwidth]{a05_rl_workflow}
+	\caption{Workflow of the Reinforcement Learning algorithm.}
+	\label{fig::rl_workflow}
+\end{figure}
+
+This method has the advantage of not having to perfectly know the relationship between an input and the system associated behaviour. Only the physics of the environment have to be well defined, as well as the reward function.
+It can be expressed as:
+
+\begin{equation*}
+	\begin{split}
+		\max &\sum^T_{t=0} R_t(x_t,u_t) \\
+		\text{s.t. } &x_{t+1} = f(x_t,u_t,e_t)
+	\end{split}
+\end{equation*}
+
+with $R$ the reward function, and $x_t$, $u_t$ and $e_t$ respectively the state, input and error at instant $t$.
+Thus, at each point in time, the agent knows the current and past states of the system, and optimizes a trajectory by choosing the best sequence of future inputs, while mitigating the error through feedback.
+How to choose the best course of action is called a policy $\pi$. This policy is what the RL agent optimizes.
+
+
+For the bipedal robot simulation, the algorithm was supposed to be implemented using MATLAB's toolbox for Reinforcement Learning.
+This led to two possibilities, using a MATLAB environment to code the algorithm or Simulink.
+Both were tested but Simulink was chosen in the end as it would have allowed us, with a working environment, to switch to another type of controller more easily if Reinforcement Learning was proven to take too long or be too difficult.
+The environment made use of the different functions defined during the precedent assignments.
+Figure~\ref{fig::rl_main_loop} and Figure~\ref{fig::rl_system_dynamics} displays the content of the Simulink algorithm.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[angle=0,width=\textwidth]{a05_rl_main_loop}
+	\caption{Main loop of the environment}
+	\label{fig::rl_main_loop}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[angle=0,width=\textwidth]{a05_rl_system_dynamics}
+	\caption{Dynamic of the system}
+	\label{fig::rl_system_dynamics}
+\end{figure}
+
+The main issue encountered with this method is the presence of what is called algebraic loops.
+Those loops happen when the output of a function necessitates its own future output as an input.
+While this should have been easily solved by defining initial conditions, Simulink was struggling with those loops.
+Another solution explored was to use a time delay or a memory block, which can solve those loops in most of cases.
+However, it delays the dynamic of the system, thus affecting the behavior of the walking robot.
+The only possible solution found was to move on from Simulink to Simscape which handles those loops better for dynamical systems.
+However this would have taken us even longer and instead, we chose to switch to another type of controller.
+
+\vspace{\baselineskip}
+
+Had it not be that difficult to use Simulink for RL, an actor-critic agent would had been chosen to determine the policy of the controller.
+The observation signal would have been the different coordinates of the robot, and the reward function was first thought to be something similar as in~\cite{matlab_rl}:
+
+\begin{equation*}
+	R = \dot{x}_\text{hip} - 50 \left( 0.3-z_\text{hip} - \text{CMT} \right)
+\end{equation*}
+
+This function rewards the velocity of the robot and penalizes the changes in height and the cost of transport.
+This reward function was kept later on for the optimization of the third controller, the virtual model controller.
+
+\subsubsection{Virtual model controller}
+
+Finally, the third controller is a virtual model controller using task space projection.
