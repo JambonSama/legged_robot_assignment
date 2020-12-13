@@ -1,13 +1,14 @@
-clc;
-clear;
-close all;
+clearvars
+close all
+clc
 
 %% run simulation
-q0 = [pi/9; -pi/9; 0];
-dq0 = [0; 0; 8]; 
-num_steps = 10;
+step_num = 10;
+optimized_parameters = control_hyper_parameters(step_num);
 
-default_parameters = control_hyper_parameters(num_steps);
-sln = solve_eqns(q0, dq0, num_steps, default_parameters);
-%animate(sln);
-analyse(sln, default_parameters, false);
+q0 = optimized_parameters(1:3);
+dq0 = optimized_parameters(4:6);
+
+sln = solve_eqns(q0, dq0, step_num, optimized_parameters);
+animate(sln);
+analyse(sln, optimized_parameters, true);

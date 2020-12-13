@@ -1,140 +1,189 @@
 function results = analyse(sln, parameters, to_plot)
 
-% calculate gait quality metrics (distance, step frequency, step length,
-% velocity, etc.)
-q = sln.Y{1,1}(:,1:3);
-dq = sln.Y{1,1}(:,4:end);
-t = sln.T{1,1};
-tstep = [sln.T{1,1}(1) sln.T{1,1}(end)];
-[x_h, ~, ~, ~] = kin_hip(q(end,:), dq(end,:));
-distance = x_h;
+	% calculate gait quality metrics (distance, step frequency, step length,
+	% velocity, etc.)
+	step_num = numel(sln.Y);
 
-if size(sln.Y,2)>1
-    for i=2:size(sln.Y,2)
-        q = [q; sln.Y{1,i}(:,1:3)];
-        dq = [dq; sln.Y{1,i}(:,4:end)];
-        t = [t; sln.T{1,i}];
-        tstep = [tstep; sln.T{1,i}(1) sln.T{1,i}(end)];
-        [x_h, ~, ~, ~] = kin_hip(q(end,:), dq(end,:));
-        [x_b, ~, ~, ~] = kin_hip(q(end-size(sln.Y{1,i}(:,1:3),1)+1,:), dq(end-size(sln.Y{1,i}(:,1:3),1)+1,:));
-     distance = distance + x_h - x_b;
-    end
-end
-num_steps = i;
-step_number = 1/numel(t):(1/numel(t))*size(tstep,1):size(tstep,1);
+	q = [];
+	dq = [];
+	t = [];
+	t_step = [];
 
-q0 = q(1,:);
-dq0 = dq(1,:);
+	for i=1:step_num
+		q = [q; sln.Y{1,i}(:,1:3)];
+		dq = [dq; sln.Y{1,i}(:,4:end)];
+		t = [t; sln.T{1,i}];
+		t_step = [t_step; numel(sln.T{1,i}) sln.T{1,i}(end)];
+		if i==1
+			[x_h, ~, ~, ~] = kin_hip(q(end,:), dq(end,:));
+			distance = x_h;
+		else
+			[x_h, ~, ~, ~] = kin_hip(q(end,:), dq(end,:));
+			[x_b, ~, ~, ~] = kin_hip(q(end-size(sln.Y{1,i}(:,1:3),1)+1,:), dq(end-size(sln.Y{1,i}(:,1:3),1)+1,:));
+			distance = distance + x_h - x_b;
+		end
+	end
 
-x_swf = zeros(numel(t),1);
-z_swf = zeros(numel(t),1);
-dx_swf = zeros(numel(t),1);
-dz_swf = zeros(numel(t),1);
-x_h = zeros(numel(t),1);
-z_h = zeros(numel(t),1);
-dx_h = zeros(numel(t),1);
-dz_h = zeros(numel(t),1);
-u = zeros(numel(t),2);
+	q0 = parameters(1);
+	dq0 = parameters(2);
 
-for i=1:numel(t)
-    [x_swf(i), z_swf(i), dx_swf(i), dz_swf(i)] = kin_swf(q(i,:), dq(i,:));
-    [x_h(i), z_h(i), dx_h(i), dz_h(i)] = kin_hip(q(i,:), dq(i,:));
-    u(i,:) = control(1,q(i,:), dq(i,:), q0, dq0,1, parameters);
-end
+	x_swf = zeros(numel(t),1);
+	z_swf = zeros(numel(t),1);
+	dx_swf = zeros(numel(t),1);
+	dz_swf = zeros(numel(t),1);
+	x_h = zeros(numel(t),1);
+	z_h = zeros(numel(t),1);
+	dx_h = zeros(numel(t),1);
+	bar_dx_h = zeros(step_num,1);
+	dz_h = zeros(numel(t),1);
+	u = zeros(numel(t),2);
 
-step_frequency = num_steps./t(end);
-step_length = x_swf;
+	for i=1:numel(t)
+		[x_swf(i), z_swf(i), dx_swf(i), dz_swf(i)] = kin_swf(q(i,:), dq(i,:));
+		[x_h(i), z_h(i), dx_h(i), dz_h(i)] = kin_hip(q(i,:), dq(i,:));
+		u(i,:) = control(0, q(i,:), dq(i,:), q0, dq0, 0, parameters);
+	end
+
+	% frequency and lambda
+	lambda = diff(t_step(:,2));
+	f = 1./lambda;
+
+	% bar dx_h
+	bar_dx_h(1) = mean(dx_h(1:t_step(1,1)));
+	for i=2:step_num
+	    bar_dx_h(i) = mean(dx_h(t_step(i-1,1)+1:t_step(i-1,1)+t_step(i,1)));
+	end
+
+	% distance
+	x_h = x_h + abs(min(x_h));
+	distance = cumsum(x_h);
+
+	% step_frequency = 1./t;
+	% step_length = x_swf;
+	% max_vel_hip = max(dx_h(100:end)); %Ignore first 100 samples
+	% min_vel_hip = min(dx_h(100:end));
+	% max_vel_foot = max(dx_swf(100:end));
+	% min_vel_foot = min(dx_swf(100:end));
+
+	effort = 1/(2*length(t)*30).*sum(u(:,1).^2+u(:,2).^2);
+	CoT = effort/(distance(end)-x_h(1));
+	velocity = mean(dx_h(t_step(1,1)+1:end)); % mean(dx_h);
+	height = mean(z_h);
+
+	if to_plot
+
+		% plot the angles
+		% figure
+		% hold on
+		% plot(t, q(:,1))
+		% plot(t, q(:,2))
+		% plot(t, q(:,3))
+		% grid on
+		% xlabel("Time [s]", "interpreter", "latex")
+		% ylabel("Angle [rad]", "interpreter", "latex")
+		% legend(["$q_1$","$q_2$","$q_3$"], "interpreter", "latex")
+
+		% plot the displacement vs step number
+		% figure
+		% plot(transpose(step_number), distance)
+		% grid on
+		% xlabel("Step", "interpreter", "latex")
+		% ylabel("Position of the hip along $x$ [m]", "interpreter", "latex")
+
+		% plot instantaneous and average velocity over time
+		% figure
+		% hold on
+		% plot(t, dx_swf, "color", "#0072BD")
+		% plot(t, dx_h, "color", "#D95319")
+		% plot([t(1) t(end)],[max_vel_foot max_vel_foot], "--", "color", "#0072BD")
+		% plot([t(1) t(end)], [max_vel_hip max_vel_hip], "--", "color", "#D95319")
+		% plot([t(1) t(end)], [min_vel_foot min_vel_foot], ":", "color", "#0072BD")
+		% plot([t(1) t(end)], [min_vel_hip min_vel_hip], ":", "color", "#D95319")
+		% grid on
+		% xlabel("$t$ [s]", "interpreter", "latex")
+		% ylabel("Velocity [m/s]", "interpreter", "latex")
+		% legend(["speed of swing foot","speed of hip","max velocity of the foot","max velocity of the hip","min velocity of the foot","min velocity of the hip"], "interpreter", "latex")
+
+		% plot x_h and z_h
+		figure
+		plot(t, x_h)
+		grid on
+		xlabel("$t$ [s]", "interpreter", "latex")
+		ylabel("$x_h$ [m]", "interpreter", "latex")
+
+		figure
+		plot(t, z_h)
+		grid on
+		xlabel("$t$ [s]", "interpreter", "latex")
+		ylabel("$z_h$ [m]", "interpreter", "latex")
+
+		% plot dx_h and bardx_h
+		figure
+		plot(t, dx_h)
+		grid on
+		xlabel("$t$ [s]", "interpreter", "latex")
+		ylabel("$\dot{x}_h$ [m]", "interpreter", "latex")
+
+		figure
+		plot(1:step_num, bar_dx_h, ".-")
+		grid on
+		xlabel("$t$ [s]", "interpreter", "latex")
+		ylabel("$\bar{\dot{x}}_h$ [m]", "interpreter", "latex")
+
+		% Step frequency vs step number
+		figure
+		plot(2:step_num, f, ".-")
+		grid on
+		xlabel("Step number", "interpreter", "latex")
+		ylabel("$f$ [m]", "interpreter", "latex")
+
+		figure
+		plot(2:step_num, lambda, ".-")
+		grid on
+		xlabel("Step number", "interpreter", "latex")
+		ylabel("$\lambda$ [s]", "interpreter", "latex")
+
+		% Torque vs time
+		figure
+		plot(t, u(:,1))
+		grid on
+		xlabel("$t$ [s]", "interpreter", "latex")
+		ylabel("$u_1$ [N$\cdot$m]", "interpreter", "latex")
+
+		figure
+		plot(t, u(:,2))
+		grid on
+		xlabel("$t$ [s]", "interpreter", "latex")
+		ylabel("$u_2$ [N$\cdot$m]", "interpreter", "latex")
+
+		% Normalized mean effort
+		disp(["Normalized mean effort = ",num2str(effort)])
+
+		% Cost of transport
+		disp(["Cost of transport = ",num2str(CoT)])
+
+		% Plot angle speed vs angle
+		figure
+		plot(q(:,1), dq(:,1))
+		grid on
+		xlabel("$q_1$", "interpreter", "latex")
+		ylabel("$\dot{q}_1$", "interpreter", "latex")
+
+		figure
+		plot(q(:,2), dq(:,2))
+		grid on
+		xlabel("$q_2$", "interpreter", "latex")
+		ylabel("$\dot{q}_2$", "interpreter", "latex")
+
+		figure
+		plot(q(:,3), dq(:,3))
+		grid on
+		xlabel("$q_3$", "interpreter", "latex")
+		ylabel("$\dot{q}_3$", "interpreter", "latex")
+
+	end
+
+	results = [distance(end), velocity, effort, CoT, height];
 
 
-max_vel_hip = max(dx_h(100:end)); %Ignore first 100 samples
-min_vel_hip = min(dx_h(100:end));
-
-max_vel_foot = max(dx_swf(100:end));
-min_vel_foot = min(dx_swf(100:end));
-
-effort = 1/(2*length(t)*30).*sum(u(:,1).^2+u(:,2).^2);
-CoT = effort/distance;
-velocity = mean(dx_h);
-height = mean(z_h);
-
-if to_plot
-    
-    % plot the angles
-    figure
-    plot(t, q(:,1), t, q(:,2), t, q(:,3))
-    hold on
-    box on
-    xlabel('t [s]'),ylabel('Angle [rad]')
-    legend('q1','q2','q3','location','best')
-    title('Angles vs time')
-
-    % plot the displacement vs step number
-    figure
-    plot(step_number', distance) %
-    hold on
-    box on
-    xlabel('step'),ylabel('Displacement [m]')
-    legend('x position of the hip','location','best')
-    title('Displacement vs step number')
-    
-    % plot instantaneous and average velocity over time
-    figure
-    plot(t, dx_swf,'r', t, dx_h, 'b')
-    hold on
-    plot([t(1) t(end)],[max_vel_foot max_vel_foot],'--r', [t(1) t(end)], [max_vel_hip max_vel_hip], '--b')
-    plot([t(1) t(end)], [min_vel_foot min_vel_foot],'--r', [t(1) t(end)], [min_vel_hip min_vel_hip], '--b')
-    box on
-    xlabel('t [s]'),ylabel('Velocity [m/s]')
-    legend('speed of swing foot','speed of hip','min-max velocity of the foot','min-max velocity of the hip','location','best')
-    title('Velocity vs time')
-    
-    % Step frequency vs step number
-    
-    
-    
-    % Torque vs time
-    figure
-    plot(t, u(:,1),'r', t, u(:,2), 'b')
-    hold on
-    box on
-    xlabel('t [s]'),ylabel('torque')
-    legend('u_1','u_2','location','best')
-    title('Torque vs time')
-    
-    % Normalized mean effort
-    
-    disp(['Normalized mean effort = ',num2str(effort)])
-    
-    % Cost of transport
-    
-    disp(['Cost of transport = ',num2str(CoT)])
-    
-    % Plot angle speed vs angle
-    
-    figure
-    subplot(2,2,1)
-    plot(q(:,1), dq(:,1),'b')
-    hold on
-    xlabel('q_1'),ylabel('dq_1')
-    title(' ')
-    
-    subplot(2,2,2)
-    plot(q(:,2), dq(:,2),'b')
-    hold on
-    xlabel('q_2'),ylabel('dq_2')
-    title(' ')
-    
-    subplot(2,2,3)
-    plot(q(:,3), dq(:,3),'b')
-    hold on
-    xlabel('dq_3'),ylabel('dq_3')
-    title(' ')
-    
-    % plot projections of the limit cycle
-   
-    % plot actuation
-    
-end
-
-results = [distance(end), velocity, effort, CoT, height];
 end

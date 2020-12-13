@@ -1,23 +1,32 @@
 function u = control(t, q, dq, q0, dq0, step_number, parameters)
-% You may call control_hyper_parameters and desired_outputs in this function
-% you don't necessarily need to use all the inputs to this control function
 
-% extract parameters
-kp1 = parameters(1);
-kp2 = parameters(2);
-kd1 = parameters(3);
-kd2 = parameters(4);
-alpha = parameters(5);
+	% You may call control_hyper_parameters and desired_outputs in this function
+	% you don't necessarily need to use all the inputs to this control function
 
-% controller for torso
-u1 = kp1*q(3)-alpha + kd1*dq(3);
+	% extract parameters
+	q0 = parameters(1:3);
+	dq0 = parameters(4:6);
+	kp1 = parameters(7);
+	kp2 = parameters(8);
+	kd1 = parameters(9);
+	kd2 = parameters(10);
+	alpha = parameters(11);
 
-% controller for legs
-u2 = -kp2*(q(2)+q(1)) - kd2*(dq(2)+dq(1));
+	% controller for torso
+	u1 = kp1*q(3)-alpha + kd1*dq(3);
 
+<<<<<<< HEAD
 % saturate the output torque
 u = [u1; u2];
 
 u = max(min(u, 30), -30); 
+=======
+	% controller for legs
+	u2 = -kp2*(q(2)+q(1)) - kd2*(dq(2)+dq(1));
+
+	% saturate the output torque
+	u = [u1; u2];
+	u = max(min(u, 30), -30);
+>>>>>>> 34fb501 (modified : Assignment 4, taking into account q0 and dq0 for optimized parameters.)
 
 end

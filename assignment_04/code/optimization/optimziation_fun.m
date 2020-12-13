@@ -11,7 +11,7 @@ sln = solve_eqns(q0, dq0, num_steps, x);
 results = analyse(sln, x, false);
 
 % calculate metrics such as distance, mean velocity and cost of transport
-w1 =10;
+w1 = 10;
 w2 = 12;
 w3 = 50;
 dx_hip = 0.7; %Desired horizontal velocity
@@ -36,8 +36,7 @@ end
 
 % handle case when model falls (e.g., objective_value = 1000)
 if results(5)<0.3
-    objective_value = 1000;    
+    objective_value = 1000;
 end
 
 end
-

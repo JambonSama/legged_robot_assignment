@@ -1,17 +1,16 @@
-clc;
-clear;
-close all;
+clearvars
+close all
+clc
 
 %% optimize
 % optimize the initial conditions and controller hyper parameters
-q0 = [pi/9; -pi/9; 0];
-dq0 = [0; 0; 8]; 
-x0 = [q0; dq0; control_hyper_parameters()];
+% q0 = [pi/9; -pi/9; 0];
+% dq0 = [0; 0; 8];
+% x0 = [q0; dq0; control_hyper_parameters()];
 
 % use fminsearch and optimset to control the MaxIter
 options = optimset('MaxIter',2e3);
-opti = fminsearch(@optimziation_fun,x0,options);
-
+opti = fminsearch(@optimization_fun,control_hyper_parameters(),options);
 
 %% simulate solution
 
