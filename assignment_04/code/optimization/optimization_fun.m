@@ -3,10 +3,10 @@ function objective_value = optimization_fun(y)
 	% extract parameters q0, dq0 and x
 	q0 = y(1:3);
 	dq0 = y(4:6);
-	x = y; % y(7:end);
+	x = y;
 
 	% run simulation
-	num_steps = 10; % the higher the better, but slow
+	num_steps = 2; % the higher the better, but slow
 	sln = solve_eqns(q0, dq0, num_steps, x);
 	results = analyse(sln, x, false);
 

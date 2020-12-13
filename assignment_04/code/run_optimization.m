@@ -17,7 +17,7 @@ opti = fminsearch(@optimization_fun,control_hyper_parameters(),options);
 % extract parameters
 q0 = opti(1:3);
 dq0 = opti(4:6);
-x_opt = opti(7:end);
+x_opt = opti;
 
 % simulate
 num_steps = 10;

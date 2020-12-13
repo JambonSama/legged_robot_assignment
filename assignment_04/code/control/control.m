@@ -4,8 +4,6 @@ function u = control(t, q, dq, q0, dq0, step_number, parameters)
     % you don't necessarily need to use all the inputs to this control function
 
     % extract parameters
-    q0 = parameters(1:3);
-    dq0 = parameters(4:6);
     kp1 = parameters(7);
     kp2 = parameters(8);
     kd1 = parameters(9);
