@@ -35,10 +35,6 @@ if CoT<0
     objective_value = 10000000;
 end
 
-if distance > 10
-    objective_value = 10000000;
-end
-
 if results(5)<0.3
     objective_value = 10000000;    
 end

@@ -3,44 +3,25 @@
 function parameters = control_hyper_parameters()
 
 % Parameters for Hip task : speed hip
-% speed_hip = 0.2;
-% kdx_h = 50;
-% 
-% % Parameters for Top task
-% kpx_t = 500; 
-% kdx_t = 200;
-% kpz_t = 500;
-% kdz_t = 200;
-% leaning_angle = deg2rad(10);
-% 
-% % Parameters for swing task
-% kpx_s = 50;
-% kdx_s = 20;
-% kpz_s = 50;
-% kdz_s = 20;
-% h = 0.05;
-% step_length = sin(pi/9)*0.5*2;
-% speed_swf = 0.4;
-
-speed_hip = 2;
-kdx_h = 200;
+speed_hip = 0.7;
+kdx_h = 20;
 
 % Parameters for Top task
-kpx_t = 502.2274; 
-kdx_t = 204.0906;
-kpz_t = 482.0316;
-kdz_t = 199.0424;
-leaning_angle = 0.4631;
+kpx_t = 1.017156038755560e+02;
+kdx_t = 4.602501714159913;
+kpz_t = 200;
+kdz_t = 20;
+leaning_angle  = 0.184588705994215;
 
 % Parameters for swing task
-kpx_s = 47.3551;
-kdx_s = 43.6488;
-kpz_s = 51.6798;
-kdz_s = 100.0000;
-h = 0.0241;
-step_length = 0.2537;
-speed_swf = 0.9932;
+kpx_s = 200;
+kdx_s = 20;
+kpz_s = 200;
+kdz_s = 20;
+h = 0.1;
+step_length = 0.6;
 
-parameters = [speed_hip, kdx_h, kpx_t, kdx_t, kpz_t, kdz_t, leaning_angle, kpx_s, kdx_s, kpz_s, kdz_s, h, step_length, speed_swf]';
+
+parameters = [speed_hip, kdx_h, kpx_t, kdx_t, kpz_t, kdz_t, leaning_angle, kpx_s, kdx_s, kpz_s, kdz_s, h, step_length]';
 
 end
