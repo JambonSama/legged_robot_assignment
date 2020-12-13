@@ -515,8 +515,6 @@ And thus a PD controller is expressed like so:
 	u_2 &= k_{P2}y_2 + k_{D2} \dot{y}_2
 \end{align*}
 
-
-
 The optimization problem is defined as the objective function $f$ of the decision variables $p$ chosen amongst the model parameters:
 
 \begin{align}
@@ -543,6 +541,17 @@ The optimizer goal is to minimize the objective function over the decision varia
 \end{align*}
 
 while managing the competing aspects of the terms (minimizing the CMT implies decreasing the simulated velocity), as well as achieving appropriate gaits (mathematical optimization doesn't always lead to solutions that make sense in a concrete, physical setup).
+
+\vspace{\baselineskip}
+
+Here, the optimizer's decision variables are:
+
+\begin{itemize}
+	\item $\mathbf{q0}$ and $\mathbf{\dot{q0}}$,
+	\item $k_{p1}$, $k_{p2}$,
+	\item $k_{d1}$, $k_{d2}$,
+	\item and the leaning angle $\alpha$.
+\end{itemize}
 
 \subsubsection{Reinforcement learning controller}
 
@@ -620,3 +629,153 @@ This reward function was kept later on for the optimization of the third control
 \subsubsection{Virtual model controller}
 
 Finally, the third controller is a virtual model controller using task space projection.
+Virtual model control is a motion control framework that uses virtual components to create virtual forces generated when the virtual components interact with the robot.
+
+\vspace{\baselineskip}
+
+Specifically, the idea is to use both the control matrix $\mathbf{B}$ (obtained from the dynamics of the robot), as well as the Jacobian $\mathbf{J}$ of the robot at specific joints or points of interest of the robot, to compute a control matrix $\mathbf{u}$ that applies chosen virtual forces $\mathbf{f}$ like so:
+
+\begin{align*}
+	\mathbf{u} &= \mathbf{B}^+ \mathbf{J}^T \left( \mathbf{q} \right) \mathbf{f} \\
+	\text{s.t. } \mathbf{f} &= \begin{bmatrix}
+		k_\text{px} \left( x_t - x \right) + k_\text{dx} \left( \dot{x}_t - \dot{x} \right) \\
+		k_\text{pz} \left( z_t - z \right) + k_\text{dz} \left( \dot{z}_t - \dot{z} \right)
+	\end{bmatrix}
+\end{align*}
+
+with t subscript denoting the target values.
+
+\vspace{\baselineskip}
+
+The virtual forces constraint the chosen joint or point of interest to a specific behaviour which leads to the desired end-product: an appropriate gait.
+
+\vspace{\baselineskip}
+
+In the case of the three-link 2D biped, there are three points of interest:
+
+\begin{itemize}
+	\item the top of the torso link
+	\item the hip joint
+	\item the swing foot
+\end{itemize} 
+
+\paragraph{Top of torso task space}
+
+The Jacobian is described by:
+
+\begin{align*}
+	\mathbf{J}_\text{top} &= \begin{bmatrix}
+		l_1 \cos q_1 & 0 & 0 \\ -l_1 \sin q_1 & 0 & 0
+	\end{bmatrix}
+\end{align*}
+
+And the virtual force chosen is:
+
+\begin{align*}
+	\mathbf{f}_\text{top} &= \begin{bmatrix}
+		k_{\text{p}x_\text{top}} \left( x_\text{top t}-x_\text{top} \right) + k_{\text{d}x_\text{top}} \left( \dot{x}_\text{top t}-\dot{x}_\text{top} \right) \\ k_{\text{p}z_\text{top}} \left( z_\text{top t}-z_\text{top} \right) + k_{\text{d}z_\text{top}} \left( \dot{z}_\text{top t}-\dot{z}_\text{top} \right)
+	\end{bmatrix} \\
+	\text{s.t } x_\text{top t} & = x_\text{hip} + l_3 \sin \alpha \\
+	z_\text{top t} &= z_\text{hip} + l_3 \cos \alpha \\
+	\dot{x}_\text{top t} &= 0 \\
+	\dot{z}_\text{top t} &= 0
+\end{align*}
+
+so that the position is constrained relative to the hip by the leaning angle $\alpha$ while the velocity is damped.
+
+\paragraph{Hip joint task space}
+
+The Jacobian is described by:
+
+\begin{align*}
+	\mathbf{J}_\text{hip} &= \begin{bmatrix}
+		l_1 \cos q_1 & 0 & l_3 \cos q_3 \\ -l_1 \sin q_1 & 0 & -l_3 \sin q_3
+	\end{bmatrix}
+\end{align*}
+
+And the virtual force chosen is:
+
+\begin{align*}
+	\mathbf{f}_\text{hip} &= \begin{bmatrix}
+		k_{\text{d}x_\text{hip}} \left( \dot{x}_\text{hip t}-\dot{x}_\text{hip} \right) \\ 0
+	\end{bmatrix}
+\end{align*}
+
+so that the hip horizontal velocity is constrained to a target value, while the hip position and the vertical velocity are free.
+
+\paragraph{Swing foot task space}
+
+The Jacobian is described by:
+
+\begin{align*}
+	\mathbf{J}_\text{swf} &= \begin{bmatrix}
+		l_1 \cos q_1 & -l_2 \cos q_2 & 0 \\ -l_1 \sin q_1 & l_2 \sin q_2 & 0
+	\end{bmatrix}
+\end{align*}
+
+And the virtual force chosen is:
+
+\begin{align*}
+	\mathbf{f}_\text{swf} &= \begin{bmatrix}
+		k_{\text{p}x_\text{swf}} \left( x_\text{swf t}-x_\text{swf} \right) + k_{\text{d}x_\text{swf}} \left( \dot{x}_\text{swf t}-\dot{x}_\text{swf} \right) \\ k_{\text{p}z_\text{swf}} h \sin q_2 + k_{\text{d}z_\text{swf}} \left( \dot{z}_\text{swf t}-\dot{z}_\text{swf} \right)
+	\end{bmatrix} \\
+	\text{s.t } x_\text{swf t} & = \dfrac{\text{step length}}{2} \\
+	\dot{x}_\text{swf t} &= 0 \\
+	\dot{z}_\text{swf t} &= 0	
+\end{align*}
+
+and a $h$ adequately small.
+Thus, the velocity is damped, the target horizontal position is constrained by the step length, and the vertical position is constrained by a positive force for $q_2>0$ and a negative force for $q_2<0$.
+
+\paragraph{Command vector}
+
+Finally, the command vector is computed as:
+
+\begin{align*}
+	\mathbf{u} &= \mathbf{u}_\text{top} + \mathbf{u}_\text{hip} + \mathbf{u}_\text{swf} \\
+	&= \mathbf{B}^+ \mathbf{J}_\text{top}^T \mathbf{f}_\text{top} + \mathbf{B}^+ \mathbf{J}_\text{hip}^T \mathbf{f}_\text{hip} + \mathbf{B}^+ \mathbf{J}_\text{swf}^T \mathbf{f}_\text{swf}
+\end{align*}
+
+and afterwards saturated to \SI{30}{\newton\meter}.
+
+\vspace{\baselineskip}
+
+It is worth to note that the task space of the top point is difficult to nail, so instead, we applied the angle method from the virtual constraints controller:
+
+\begin{align*}
+	\mathbf{u}_\text{top} &= \begin{bmatrix}
+		k_{\text{p}x_\text{top}} \left( q_3 -\alpha \right) + k_{\text{d}x_\text{top}} \dot{q}_3 \\ 0
+	\end{bmatrix}
+\end{align*}
+
+\paragraph{Optimization}
+The optimization problem is defined as the objective function $f$ of the decision variables $p$ chosen amongst the model parameters:
+
+\begin{align}
+	\label{eq::virtual_model_objective_fun}
+	f(p) &= w_1 | \dot{x}_\text{hip d} - \bar{\dot{x}}_\text{hip}(p) | + w_2 \text{CMT}(p) + w_3 \left( z_\text{hip d} - \bar{z}_\text{hip}(p) \right) + w_4 d + w_5 (f_\text{d}-\bar{f})^2 
+\end{align}
+
+where:
+
+\begin{itemize}
+	\item $\dot{x}_\text{hip d}$ is the desired horizontal hip velocity,
+	\item $\bar{\dot{x}}_\text{hip} (p)$ the simulated average horizontal velocity,
+	\item $z_\text{hip d}$ the desired vertical position,
+	\item $\bar{z}_\text{hip}$ the simulated average vertical position,
+	\item $d$ the total distance travelled by the robot,
+	\item $f_\text{d}$ is the desired step frequency,
+	\item $\bar{f}$ is the simulated average step frequency,
+	\item and $w_i$ the weights.
+\end{itemize}
+
+%\vspace{\baselineskip}
+%
+%Here, the optimizer's decision variables are:
+%
+%\begin{itemize}
+%	\item bla,
+%	\item bla,
+%	\item bla,
+%	\item and bla bla.
+%\end{itemize}

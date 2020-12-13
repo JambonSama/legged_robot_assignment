@@ -1,3 +1,4 @@
+\newpage
 \section{Results}
 
 \subsection{Virtual constraints controller}
@@ -20,24 +21,25 @@ When optimizing on the objective function~\ref{eq::virtual_constraints_objective
 
 The state-space plot displayed on Figure~\ref{img::virtual_constraints_state_space} are a great way to assess whether the gait is stable, and after how long.
 Indeed, on Figure~\ref{img::virtual_constraints_state_space}, we can observe that the first two steps are not in a steady-state yet.
-Only starting from step three and onward (out of ten steps) is the gait stable, and that is illustrated by the state-space plots looping back on itself.
+Only starting from step three and onward (out of ten steps) is the gait stable, and that is illustrated by the state-space plots looping back on themselves.
 Even like so, the third step is not quite steady for the top link of the robot before the fourth step.
 
+
 \begin{figure}[H]
-	\begin{subfigure}[h]{0.495\textwidth}
+	\begin{subfigure}[h]{0.35\textwidth}
 		\begin{center}
 			\includegraphics[width=\textwidth]{a04_state_space_q1_optimized}
 			\caption{$q_1$ state-space plot}
 		\end{center}
 	\end{subfigure}
-	\begin{subfigure}[h]{0.495\textwidth}
+	\begin{subfigure}[h]{0.35\textwidth}
 		\begin{center}
 			\includegraphics[width=\textwidth]{a04_state_space_q2_optimized}
 			\caption{$q_2$ state-space plot}
 		\end{center}
 	\end{subfigure}
 	
-	\begin{subfigure}[h]{0.495\textwidth}
+	\begin{subfigure}[h]{0.35\textwidth}
 		\begin{center}
 			\includegraphics[width=\textwidth]{a04_state_space_q3_optimized}
 			\caption{$q_3$ state-space plot}
@@ -47,21 +49,23 @@ Even like so, the third step is not quite steady for the top link of the robot b
 	\label{img::virtual_constraints_state_space}
 \end{figure}
 
-Then, when looking at the position of the hip along time on Figure~\ref{fig::virtual_constraints_hip_position}, we can observe two things:
+Then, when looking at the position of the hip along time on Figure~\ref{fig::virtual_constraints_hip_position}, we can make a few observations:
 
 \begin{itemize}
-	\item the stability of the gait as assessed from the state-space plots is confirmed by those plots: the first two steps are not in steady-state, but the subsequent steps are quite periodic,
-	\item the hip oscillates vertically, while advancing linearly horizontally.
+	\item the stability of the gait as assessed from the state-space plots is confirmed by those plots: the first two steps are not in steady-state, but the subsequent steps have a periodic aspect,
+	\item vertically, the hip oscillates,
+	\item while horizontally, it's advancing at a constant rate.
 \end{itemize}
 
+
 \begin{figure}[H]
-	\begin{subfigure}[h]{0.8\textwidth}
+	\begin{subfigure}[h]{0.6\textwidth}
 		\begin{center}
 			\includegraphics[width=\textwidth]{a04_x_h}
 			\caption{horizontal position of the hip}
 		\end{center}
 	\end{subfigure}
-	\begin{subfigure}[h]{0.8\textwidth}
+	\begin{subfigure}[h]{0.6\textwidth}
 		\begin{center}
 			\includegraphics[width=\textwidth]{a04_z_h}
 			\caption{vertical position of the hip}
@@ -71,97 +75,190 @@ Then, when looking at the position of the hip along time on Figure~\ref{fig::vir
 	\label{fig::virtual_constraints_hip_position}
 \end{figure}
 
-
+The saturation of the command is effective on $u_1$, but $u_2$ doesn't reach the maximum, so the saturation doesn't have an effect on it, as can be seen on Figure~\ref{fig::virtual_constraints_commands}:
 
 \begin{figure}[H]
-	\begin{subfigure}[h]{0.495\textwidth}
+	\begin{subfigure}[h]{0.35\textwidth}
 		\begin{center}
 			\includegraphics[width=\textwidth]{a04_control_torques_u1_optimized}
 			\caption{first actuator}
 		\end{center}
 	\end{subfigure}
-	\begin{subfigure}[h]{0.495\textwidth}
+	\begin{subfigure}[h]{0.35\textwidth}
 		\begin{center}
 			\includegraphics[width=\textwidth]{a04_control_torques_u2_optimized}
 			\caption{second actuator}
 		\end{center}
 	\end{subfigure}
 	\caption{Command angles in function of time for both actuators.}
+	\label{fig::virtual_constraints_commands}
 \end{figure}
 
-
-
+Also, the horizontal velocity of the hip stabilizes after the third step, and in the steady-state, oscillates between \SI{0.6}{\meter\per\second} and \SI{0.9}{\meter\per\second}, as can be seen on Figure~\ref{fig::virtual_constraints_hip_velocity} (left).
+In particular, when looking at the velocity averaged on each step on Figure~\ref{fig::virtual_constraints_hip_velocity} (right), it reaches at steady-state the average velocity of $\sim\SI{0.74}{\meter\per\second}$ for a target of \SI{0.7}{\meter\per\second}:
 
 \begin{figure}[H]
-	\begin{subfigure}[h]{0.495\textwidth}
+	\begin{subfigure}[h]{0.35\textwidth}
 		\begin{center}
 			\includegraphics[width=\textwidth]{a04_dx_h}
 			\caption{velocity of the hip}
 		\end{center}
 	\end{subfigure}
-	\begin{subfigure}[h]{0.495\textwidth}
+	\begin{subfigure}[h]{0.35\textwidth}
 		\begin{center}
 			\includegraphics[width=\textwidth]{a04_average_dx_h}
 			\caption{velocity of the hip averaged over the steps}
 		\end{center}
 	\end{subfigure}
 	\caption{Velocity  of the hip in function of time / steps.}
+	\label{fig::virtual_constraints_hip_velocity}
 \end{figure}
 
+The plots of the step frequencies and durations (Figure~\ref{fig::virtual_constraints_step_regularity}) allow to assess, once again, that after the third step, the robot is in steady-state, because the frequency of the step stabilizes afterwards.
+
 \begin{figure}[H]
-	\begin{subfigure}[h]{0.495\textwidth}
+	\begin{subfigure}[h]{0.35\textwidth}
 		\begin{center}
 			\includegraphics[width=\textwidth]{a04_step_frequency}
 			\caption{step frequency}
 		\end{center}
 	\end{subfigure}
-	\begin{subfigure}[h]{0.495\textwidth}
+	\begin{subfigure}[h]{0.35\textwidth}
 		\begin{center}
 			\includegraphics[width=\textwidth]{a04_step_lambda}
 			\caption{step duration}
 		\end{center}
 	\end{subfigure}
 	\caption{Regularity of the stepping.}
+	\label{fig::virtual_constraints_step_regularity}
 \end{figure}
 
-%This gives us when computed a higher maximum and minimum velocity for the hip and swing foot. Furthermore, the input for $u_1$ and $u_2$ are also higher, while the angles for the three components of $q$ are smaller. This lead to a lower distance walked by the model over 9 steps, compared to the initial parameters. The nine steps are achieved faster but at the cost of smaller steps. The different metrics can be found here and are to be compared with those of the initial parameters when using the \verb|run\simulation.m| script.
-%
-%\begin{figure}[H]
-%	\centering
-%	\includegraphics[width=0.8\textwidth]{optimal/angle_velocity_vs_angle}
-%	\caption{The angle velocity along the angle.}
-%\end{figure}
-%
-%The maps appear to be more stable.
-%
-%\begin{figure}[H]
-%	\centering
-%	\includegraphics[width=0.8\textwidth]{optimal/angle_vs_time.png}
-%	\caption{The angle of each component of $q$ throughout the simulation.}
-%\end{figure}
-%
-%\begin{figure}[H]
-%	\centering
-%	\includegraphics[width=0.99\textwidth]{optimal/displacement_vs_step_number}
-%	\caption{The displacement of the simulation over each steps.}
-%\end{figure}
-%
-%\begin{figure}[H]
-%	\centering
-%	\includegraphics[width=0.99\textwidth]{optimal/speed_vs_time}
-%	\caption{The angle velocity along the angle.}
-%\end{figure}
-%
-%The maps appear to be more stable.
-%
-%\begin{figure}[H]
-%	\centering
-%	\includegraphics[width=0.99\textwidth]{optimal/torque_vs_time}
-%	\caption{The controller input over time during the simulation}
-%\end{figure}
-
-\subsection{Reinforcment learning controller}
-
-Because of problem of implementation, the RL controller was not completed, and thus didn't yield results.
+The normalized mean effort is \SI{4.23}{\newton\meter\per\second}, and the CMT is \num{6.524e-3}.
 
 \subsection{Virtual model controller}
+
+When optimizing on the objective function~\ref{eq::virtual_model_objective_fun} with:
+
+\begin{itemize}
+	\item $w_1 = 1$,
+	\item $w_2 = 10$,
+	\item $w_3=200$,
+	\item $w_4=-1$,
+	\item $w_5=20$,
+	\item $\dot{x} = \SI{0.7}{\meter\per\second}$,
+	\item $z_\text{hip d} = \SI{0.35}{\meter}$,
+	\item and $f_\text{d} = \SI{2.5}{\hertz}$.
+\end{itemize}
+
+On Figure~\ref{img::virtual_model_state_space}, we can observe that the steady-state is reached faster than with the virtual constraints controller, namely, at the second step already.
+
+\begin{figure}[H]
+	\begin{subfigure}[h]{0.35\textwidth}
+		\begin{center}
+			\includegraphics[width=\textwidth]{a05_state_space_q1_optimized}
+			\caption{$q_1$ state-space plot}
+		\end{center}
+	\end{subfigure}
+	\begin{subfigure}[h]{0.35\textwidth}
+		\begin{center}
+			\includegraphics[width=\textwidth]{a05_state_space_q2_optimized}
+			\caption{$q_2$ state-space plot}
+		\end{center}
+	\end{subfigure}
+	
+	\begin{subfigure}[h]{0.35\textwidth}
+		\begin{center}
+			\includegraphics[width=\textwidth]{a05_state_space_q3_optimized}
+			\caption{$q_3$ state-space plot}
+		\end{center}
+	\end{subfigure}
+	\caption{State-space plot for the three generalized coordinates.}
+	\label{img::virtual_model_state_space}
+\end{figure}
+
+Then, when looking at the position of the hip along time on Figure~\ref{fig::virtual_model_hip_position}, we can make observations similar to the ones for the virtual constraints controller:
+
+\begin{itemize}
+	\item the stability of the gait is reached at the second state, as precedently observed on the state-space plots,
+	\item vertically, the hip oscillates,
+	\item while horizontally, it's advancing at a constant rate.
+\end{itemize}
+
+
+\begin{figure}[H]
+	\begin{subfigure}[h]{0.6\textwidth}
+		\begin{center}
+			\includegraphics[width=\textwidth]{a05_x_h}
+			\caption{horizontal position of the hip}
+		\end{center}
+	\end{subfigure}
+	\begin{subfigure}[h]{0.6\textwidth}
+		\begin{center}
+			\includegraphics[width=\textwidth]{a05_z_h}
+			\caption{vertical position of the hip}
+		\end{center}
+	\end{subfigure}
+	\caption{Position of the hip as a function of time.}
+	\label{fig::virtual_model_hip_position}
+\end{figure}
+
+None of the commands $\mathbf{u}$ saturate, as can be seen on Figure~\ref{fig::virtual_model_commands}:
+
+
+\begin{figure}[H]
+	\begin{subfigure}[h]{0.35\textwidth}
+		\begin{center}
+			\includegraphics[width=\textwidth]{a05_control_torques_u1_optimized}
+			\caption{first actuator}
+		\end{center}
+	\end{subfigure}
+	\begin{subfigure}[h]{0.35\textwidth}
+		\begin{center}
+			\includegraphics[width=\textwidth]{a05_control_torques_u2_optimized}
+			\caption{second actuator}
+		\end{center}
+	\end{subfigure}
+	\caption{Command angles in function of time for both actuators.}
+	\label{fig::virtual_model_commands}
+\end{figure}
+
+Also, the horizontal velocity of the hip stabilizes after the second step, and in the steady-state, oscillates between \SI{0.5}{\meter\per\second} and \SI{1.5}{\meter\per\second}, as can be seen on Figure~\ref{fig::virtual_model_hip_velocity} (left).
+In particular, when looking at the velocity averaged on each step on Figure~\ref{fig::virtual_model_hip_velocity} (right), it reaches at steady-state the average velocity of $\sim\SI{1.1}{\meter\per\second}$ for a target of \SI{0.5}{\meter\per\second}.
+
+\begin{figure}[H]
+	\begin{subfigure}[h]{0.35\textwidth}
+		\begin{center}
+			\includegraphics[width=\textwidth]{a05_dx_h}
+			\caption{velocity of the hip}
+		\end{center}
+	\end{subfigure}
+	\begin{subfigure}[h]{0.35\textwidth}
+		\begin{center}
+			\includegraphics[width=\textwidth]{a05_average_dx_h}
+			\caption{velocity of the hip averaged over the steps}
+		\end{center}
+	\end{subfigure}
+	\caption{Velocity  of the hip in function of time / steps.}
+	\label{fig::virtual_model_hip_velocity}
+\end{figure}
+
+The plots of the step frequencies and durations (Figure~\ref{fig::virtual_model_step_regularity}) allow to assess, once again, that after the second step, the robot is in steady-state, because the frequency of the step stabilizes afterwards.
+
+\begin{figure}[H]
+	\begin{subfigure}[h]{0.35\textwidth}
+		\begin{center}
+			\includegraphics[width=\textwidth]{a05_step_frequency}
+			\caption{step frequency}
+		\end{center}
+	\end{subfigure}
+	\begin{subfigure}[h]{0.35\textwidth}
+		\begin{center}
+			\includegraphics[width=\textwidth]{a05_step_lambda}
+			\caption{step duration}
+		\end{center}
+	\end{subfigure}
+	\caption{Regularity of the stepping.}
+	\label{fig::virtual_model_step_regularity}
+\end{figure}
+
+The normalized mean effort is \SI{80.4321}{\newton\meter\per\second}, and CMT is \num{0.2024}.
