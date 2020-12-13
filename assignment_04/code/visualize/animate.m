@@ -5,8 +5,8 @@
 %%
 function animate(sln)
 
-    % v = VideoWriter("virtual_constraints","Uncompressed AVI");
-    % open(v)
+    v = VideoWriter("virtual_constraints","Uncompressed AVI");
+    open(v)
 	figure();
 	skip = 10;
 	tic();
@@ -20,14 +20,14 @@ function animate(sln)
 			pause(0.002);
 			visualize(q, r0);
 			hold off
-            % A = getframe;
-            % writeVideo(v,A)
+            A = getframe;
+            writeVideo(v,A)
 		end
 		[x0, ~, ~, ~] = kin_swf(q);
 		r0 = r0 + [x0; 0];
     end
 
-    % close(v)
+    close(v)
 	t_anim = toc();
 	real_time_factor = sln.T{end}(end) / t_anim;
 	fprintf('Real time factor:');

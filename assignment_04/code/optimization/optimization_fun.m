@@ -3,22 +3,21 @@ function objective_value = optimization_fun(y)
 	% extract parameters q0, dq0 and x
 	q0 = y(1:3);
 	dq0 = y(4:6);
-	x = y;
 
 	% run simulation
-	num_steps = 2; % the higher the better, but slow
-	sln = solve_eqns(q0, dq0, num_steps, x);
-	results = analyse(sln, x, false);
+	num_steps = 10; % the higher the better, but slow
+	sln = solve_eqns(q0, dq0, num_steps, y);
+	results = analyse(sln, y, false);
 
 	% calculate metrics such as distance, mean velocity and cost of transport
 	w1 = 0.5;
 	w2 = (1-w1);
 	dx_hip = 0.7; % desired horizontal velocity
 
-	max_actuation = 30;
-	distance = results(1);
+	% max_actuation = 30;
+	% distance = results(1);
 	velocity = results(2);
-	effort = results(3);
+	% effort = results(3);
 	CoT = results(4);
 	objective_value = w1*abs(dx_hip-velocity)+w2*CoT;
 

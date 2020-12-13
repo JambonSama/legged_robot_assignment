@@ -10,14 +10,13 @@ clc
 
 % use fminsearch and optimset to control the MaxIter
 options = optimset('MaxIter',2e3);
-opti = fminsearch(@optimization_fun,control_hyper_parameters(),options);
+optimization = fminsearch(@optimization_fun,control_hyper_parameters(),options);
 
 %% simulate solution
-
 % extract parameters
-q0 = opti(1:3);
-dq0 = opti(4:6);
-x_opt = opti;
+q0 = optimization(1:3);
+dq0 = optimization(4:6);
+x_opt = optimization;
 
 % simulate
 num_steps = 10;
