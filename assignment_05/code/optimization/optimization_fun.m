@@ -11,10 +11,15 @@ function objective_value = optimization_fun(y)
 	results = analyse(sln, x, false);
 
 	% calculate metrics such as distance, mean velocity and cost of transport
-	w1 =10;
-	w2 = 12;
-	w3 = 50;
-	dx_hip = 0.5; %Desired horizontal velocity
+	w1 = -10;
+	w2 = 1;
+	w3 = 100;
+    w4 = 200;
+    w5 = -200;
+	dx_hip = 0.7; %Desired horizontal velocity
+    step_length_target = 0.5;
+    
+    
 
 	max_actuation = 30;
 	distance = results(1);
@@ -23,7 +28,7 @@ function objective_value = optimization_fun(y)
 	CoT = results(4);
 	height = results(5);
 
-	objective_value = w1*abs(dx_hip-velocity)+200*CoT -2000*(height-0.35)-10*distance;
+	objective_value = w1*distance+w2*(dx_hip-velocity)^2+w3*(step_length_target-step_length)^2+w4*CoT + w5*(height-height_min);
 
 	% handle corner case when model walks backwards (e.g., objective_value =
 	% 1000)
