@@ -11,16 +11,17 @@ function results = analyse(sln, parameters, to_plot)
 	[x_h, ~, ~, ~] = kin_hip(q(end,:), dq(end,:));
 	distance = x_h;
 
-	if size(sln.Y,2)>1
-		for i=2:size(sln.Y,2)
+	if step_num > 1
+		for i=2:step_num
 			q = [q; sln.Y{1,i}(:,1:3)];
 			dq = [dq; sln.Y{1,i}(:,4:end)];
 			t = [t; sln.T{1,i}];
 			t_step = [t_step; numel(sln.T{1,i}) sln.T{1,i}(end)];
 			[x_h, ~, ~, ~] = kin_hip(q(end,:), dq(end,:));
-			[x_b, ~, ~, ~] = kin_hip(q(end-size(sln.Y{1,i}(:,1:3),1)+1,:), dq(end-size(sln.Y{1,i}(:,1:3),1)+1,:));
+            step_size = size(sln.Y{1,i},1);
+			[x_b, ~, ~, ~] = kin_hip(q(end-step_size+1,:), dq(end-step_size+1,:));
             [x_s_h, ~, ~, ~] = kin_swf(q(end,:), dq(end,:));
-			[x_s_b, ~, ~, ~] = kin_swf(q(end-size(sln.Y{1,i}(:,1:3),1)+1,:), dq(end-size(sln.Y{1,i}(:,1:3),1)+1,:));
+			[x_s_b, ~, ~, ~] = kin_swf(q(end-step_size+1,:), dq(end-step_size+1,:));
 			distance = distance + x_h - x_b;
             A_step_length(i) = x_s_h - x_s_b;
 		end
@@ -42,6 +43,7 @@ function results = analyse(sln, parameters, to_plot)
 	for i=1:numel(t)
 		[x_swf(i), z_swf(i), dx_swf(i), dz_swf(i)] = kin_swf(q(i,:), dq(i,:));
 		[x_h(i), z_h(i), dx_h(i), dz_h(i)] = kin_hip(q(i,:), dq(i,:));
+		[x_top(i), z_top(i), dx_top(i), dz_top(i)] = kin_top(q(i,:), dq(i,:));
 		u(i,:) = control(q(i,:), dq(i,:), q0, dq0, parameters);
 	end
 
@@ -59,12 +61,13 @@ function results = analyse(sln, parameters, to_plot)
 
 	% distance
 	x_h = x_h + abs(min(x_h));
-	distance = cumsum(x_h);
+	distance = x_h(end);
 
 	effort = 1/(2*length(t)*30).*sum(u(:,1).^2+u(:,2).^2);
-	CoT = effort/distance(end);
+	CoT = effort/distance;
 	velocity = mean(dx_h);
-	height = mean(z_h);
+	z_h_average = mean(z_h);
+	z_top_average = mean(z_top);
     step_length_mean = mean(A_step_length);
 
 	if to_plot
@@ -191,6 +194,6 @@ function results = analyse(sln, parameters, to_plot)
 
 	end
 
-	results = [distance(end), velocity, effort, CoT, height, step_length_mean];
+	results = [distance(end), velocity, effort, CoT, z_h_average, z_top_average, step_length_mean];
 
 end
