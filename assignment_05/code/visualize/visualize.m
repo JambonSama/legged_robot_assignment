@@ -6,12 +6,19 @@
 % pi/8]
 % r0 is the position of the stance foot in the global frame.
 %%
-function visualize(q, r0)
-
+function visualize(q, r0, cmd)
+persistent handle_links handle_m1 handle_m2 handle_m3 handle_gnd
 	% default r0 = [0; 0]
 	if nargin == 1
 		r0 = [0; 0];
-	end
+    end
+    
+    if nargin == 3
+        if cmd == "reset"
+            clear handle_links handle_m1 handle_m2 handle_m3 handle_gnd
+            return;
+        end
+    end
 
 	x0 = r0(1);
 	z0 = r0(2);
@@ -41,25 +48,47 @@ function visualize(q, r0)
 	line_width = 2;
 	marker_size = 30;
 
-	% links
-	plot([x0, x_h], [z0, z_h], 'linewidth', line_width);
-	hold on
-	plot([x_h, x_swf], [z_h, z_swf], 'linewidth', line_width);
-	plot([x_h, x_t], [z_h, z_t], 'linewidth', line_width);
+    if isempty(handle_links)
+        % links
+        handle_links = plot([x0, x_h], [z0, z_h], [x_h, x_swf], [z_h, z_swf], [x_h, x_t], [z_h, z_t], 'linewidth', line_width);
+        hold on
+        % point masses
+        handle_m1 = plot(x1, z1, '.', 'markersize', marker_size, 'color', '#0072BD');
+        handle_m2 = plot(x2, z2, '.', 'markersize', marker_size, 'color', '#D95319');
+        handle_m3 = plot(x3, z3, '.', 'markersize', marker_size, 'color', '#EDB120');
 
-	% point masses
-	plot(x1, z1, '.', 'markersize', marker_size, 'color', '#0072BD');
-	plot(x2, z2, '.', 'markersize', marker_size, 'color', '#D95319');
-	plot(x3, z3, '.', 'markersize', marker_size, 'color', '#EDB120');
+        % plot a line for "ground"
+        handle_gnd = plot([-1 + x_h, 1 + x_h], [0, 0], 'color', 'black');
+        axis 'equal'
 
-	% plot a line for "ground"
-	plot([-1 + x_h, 1 + x_h], [0, 0], 'color', 'black');
+        xlabel("x","interpreter","latex")
+        ylabel("z","interpreter","latex")
+        title("Virtual model (task space projection): robot's gait simulation","interpreter","latex")
+        hold off
+    else
+        handle_links(1).XData = [x0, x_h];
+        handle_links(1).YData = [z0, z_h];
+        
+        handle_links(2).XData = [x_h, x_swf];
+        handle_links(2).YData = [z_h, z_swf];
+        
+        handle_links(3).XData = [x_h, x_t];
+        handle_links(3).YData = [z_h, z_t];
+        
+        handle_m1.XData = x1;
+        handle_m1.YData = z1;
+        
+        handle_m2.XData = x2;
+        handle_m2.YData = z2;
+        
+        handle_m3.XData = x3;
+        handle_m3.YData = z3;
+        
+        handle_gnd.XData = [-1 + x_h, 1 + x_h];
+        handle_gnd.YData = [0, 0];
+    end
 
-	axis 'equal'
-	xlim([-1 + x_h, 1 + x_h]);
-	ylim([-0.8, 1.2]);
-	xlabel("x","interpreter","latex")
-	ylabel("z","interpreter","latex")
-	title("Virtual model (task space projection): robot's gait simulation","interpreter","latex")
+    xlim([-1 + x_h, 1 + x_h]);
+    ylim([-0.8, 1.2]);
 
 end

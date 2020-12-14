@@ -12,8 +12,8 @@ x0 = [control_hyper_parameters];
 % gs = GlobalSearch('XTolerance',0.01,'MaxTime',1000);
 ms = MultiStart('UseParallel',true,'Display','iter');
 
-l = [0;   0;   0;  0;   0;  0;    0;   0;   0;   0;  0;    0; 0.5];
-u = [1;  60; 500; 60; 500; 60; pi/3; 500;  60; 500; 60; 0.15; 0.8];
+l = [0;   0;   0;  0;   0;  0;    0;   0;   0;  0.8; 0.35];
+u = [1;  200; 900; 200; 900; 200; pi/6; 900;  200;  1.5; 0.8];
 
 % use fminsearch and optimset to control the MaxIter
 options = optimoptions(@fmincon,'Algorithm','interior-point');

@@ -2,7 +2,7 @@
 % may not want to use the step_number as the input of the function.
 function parameters = control_hyper_parameters()
 
-	speed_hip = 6.39469190257901;
+	speed_hip = 0.39469190257901;
 	kdx_h = 20.9433388149472;
 
 	% Parameters for Top task
@@ -15,11 +15,12 @@ function parameters = control_hyper_parameters()
 	% Parameters for swing task
 	kpx_s = 435.266795609239;
 	kdx_s = 48.8443276366812;
-	kpz_s = 42.8699013722305;
-	kdz_s = 31.7881876128433;
+	kpz_s = 0;
+	kdz_s = 0;
 	h = 0.0377193063318664;
 	step_length = 0.570871731031634;
 
-	parameters = [speed_hip, kdx_h, kpx_t, kdx_t, kpz_t, kdz_t, leaning_angle, kpx_s, kdx_s, kpz_s, kdz_s, h, step_length]';
+% 	parameters = [speed_hip, kdx_h, kpx_t, kdx_t, kpz_t, kdz_t, leaning_angle, kpx_s, kdx_s, kpz_s, kdz_s, h, step_length]';
+    parameters = [speed_hip, kdx_h, kpx_t, kdx_t, kpz_t, kdz_t, leaning_angle, kpx_s, kdx_s, h, step_length]';
 
 end

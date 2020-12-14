@@ -5,21 +5,21 @@
 %%
 function animate(sln)
 
-    % v = VideoWriter("virtual_constraints","Uncompressed AVI");
+    % v = VideoWriter("virtual_model","Uncompressed AVI");
     % open(v)
 	figure();
 	skip = 10;
 	tic();
 	num_steps = length(sln.T);
 	r0 = [0; 0];
+    visualize(0, 0, "reset");
 	for j = 1:num_steps
 		Y = sln.Y{j};
 		[N, ~] = size(Y);
 		for i = 1:skip:N
 			q = Y(i, 1:3);
-			pause(0.002);
+			pause(1/200.0);
 			visualize(q, r0);
-			hold off
             % A = getframe(gcf);
             % writeVideo(v,A)
 		end

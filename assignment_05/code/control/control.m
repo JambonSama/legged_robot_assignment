@@ -26,7 +26,7 @@ function u = control(q, dq, q0, dq0, parameters)
 	kdx_top = parameters(4);
 	% kpz_top = parameters(5);
 	% kdz_top = parameters(6);
-	leaning_angle = parameters(7);
+	leaning_angle = parameters(5);
 	%
 	% % Computation ref value Top
 	% x_top_t = x_hip + l3*sin(leaning_angle);
@@ -42,12 +42,12 @@ function u = control(q, dq, q0, dq0, parameters)
 
 	%% Swing foot task
 	% Swing foot parameters
-	kpx_swf = parameters(8);
-	kdx_swf = parameters(9);
-	kpz_swf = parameters(10);
-	kdz_swf = parameters(11);
-	h = parameters(12);
-	step_length = parameters(13);
+	kpx_swf = parameters(6);
+	kdx_swf = parameters(7);
+	kpz_swf = parameters(8);
+	kdz_swf = parameters(9);
+	h = parameters(10);
+	step_length = parameters(11);
 
 	% Computation ref value Swing foot
 	x_swf_t = step_length/2;

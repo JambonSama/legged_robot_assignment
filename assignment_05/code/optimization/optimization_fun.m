@@ -12,47 +12,51 @@ function objective_value = optimization_fun(y)
 
 	% calculate metrics such as distance, mean velocity and cost of transport
 	w1 = 0;
-	w2 = 20;
-	w3 = 100;
-    w4 = 200;
-    w5 = 500;
-    w6 = 500;
-	dx_hip_target = 0.7; %Desired horizontal velocity
-    step_length_target = 0.5;
-    z_hip_min = 0.35;
-    z_top_min = 0.6;
+	w2 = 100;
+	w3 = 200;
+    w4 = 20;
+    w5 = 100;
+    w6 = 100;
+	dx_hip_t = 0.7; %Desired horizontal velocity
+    step_length_t = 0.5;
+    z_hip_min_t = 0.35;
+    z_top_min_t = 0.6;
 
-	max_actuation = 30;
+	u_max = 30;
 	distance_travelled = results(1);
-	dx_hip_average = results(2);
+	dx_hip_avg = results(2);
 	effort = results(3);
-	CoT = results(4);
-	z_hip_average = results(5);
-    z_top_average = results(6);
-    step_length = results(7);
+	cmt = results(4);
+	z_hip_min = results(5);
+    z_top_min = results(6);
+    step_length_avg = results(7);
 
-	objective_value = w1*distance_travelled+w2*(dx_hip_target-dx_hip_average)^2+w3*(step_length_target-step_length)^2+w4*CoT + w5*(z_hip_min-z_hip_average) + w6*(z_top_min-z_top_average);
+	objective_value = w1*distance_travelled+w2*(dx_hip_t-dx_hip_avg)^2+w3*(step_length_t-step_length_avg)^2+w4*cmt + w5*(z_hip_min_t-z_hip_min) + w6*(z_top_min_t-z_top_min);
 
 	% handle corner case when model walks backwards (e.g., objective_value =
 	% 1000)
-	if dx_hip_average<=0
+    if dx_hip_avg<=0
 		objective_value = 10000000;
-	end
-
-	if CoT<0
-		objective_value = 10000000;
-	end
-
-	if results(5)<0.3
-		objective_value = 10000000;
-	end
-    
-    if objective_value<0
-        objective_value
-        distance_travelled
-        z_hip_average
-        z_top_average
-        CoT
     end
+
+    if cmt<0
+		objective_value = 10000000;
+    end
+
+    if results(5)<0.3
+		objective_value = 10000000;
+    end
+    
+    if z_top_min<0.5
+		objective_value = 10000000;
+    end
+    
+%     if objective_value<0
+%         objective_value
+%         distance_travelled
+%         z_hip_average
+%         z_top_average
+%         CoT
+%     end
 
 end
