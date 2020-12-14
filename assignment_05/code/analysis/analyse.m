@@ -65,6 +65,7 @@ function results = analyse(sln, parameters, to_plot)
 	CoT = effort/distance(end);
 	velocity = mean(dx_h);
 	height = mean(z_h);
+    step_length_mean = mean(A_step_length);
 
 	if to_plot
 		path = "../../report/img/";
@@ -190,6 +191,6 @@ function results = analyse(sln, parameters, to_plot)
 
 	end
 
-	results = [distance(end), velocity, effort, CoT, height];
+	results = [distance(end), velocity, effort, CoT, height, step_length_mean];
 
 end

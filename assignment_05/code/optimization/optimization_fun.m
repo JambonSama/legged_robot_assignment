@@ -6,7 +6,7 @@ function objective_value = optimization_fun(y)
 	x = y(7:end);
 
 	% run simulation
-	num_steps = 10; % the higher the better, but slow
+	num_steps = 50; % the higher the better, but slow
 	sln = solve_eqns(q0, dq0, num_steps, x);
 	results = analyse(sln, x, false);
 
@@ -18,7 +18,7 @@ function objective_value = optimization_fun(y)
     w5 = -200;
 	dx_hip = 0.7; %Desired horizontal velocity
     step_length_target = 0.5;
-    
+    height_min = 0.35;
     
 
 	max_actuation = 30;
@@ -27,6 +27,7 @@ function objective_value = optimization_fun(y)
 	effort = results(3);
 	CoT = results(4);
 	height = results(5);
+    step_length = results(6);
 
 	objective_value = w1*distance+w2*(dx_hip-velocity)^2+w3*(step_length_target-step_length)^2+w4*CoT + w5*(height-height_min);
 

@@ -64,6 +64,6 @@ function u = control(q, dq, q0, dq0, parameters)
 
 	% saturate the output torque
 	%u = [u1; u2];
-	%u = max(min(u, 30), -30)
+	u = max(min(u, 30), -30)
 
 end

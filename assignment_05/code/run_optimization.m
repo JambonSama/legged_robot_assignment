@@ -31,7 +31,7 @@ dq0 = x(4:6);
 x_opt = x(7:end);
 
 % simulate
-num_steps = 10;
+num_steps = 50;
 sln = solve_eqns(q0, dq0, num_steps, x_opt);
 animate(sln);
 results = analyse(sln, x_opt, false);
