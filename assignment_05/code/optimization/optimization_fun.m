@@ -11,7 +11,7 @@ function objective_value = optimization_fun(y)
 	results = analyse(sln, x, false);
 
 	% calculate metrics such as distance, mean velocity and cost of transport
-	w1 = 0;
+	w1 = -1;
 	w2 = 100;
 	w3 = 200;
     w4 = 20;
@@ -31,32 +31,6 @@ function objective_value = optimization_fun(y)
     z_top_min = results(6);
     step_length_avg = results(7);
 
-	objective_value = w1*distance_travelled+w2*(dx_hip_t-dx_hip_avg)^2+w3*(step_length_t-step_length_avg)^2+w4*cmt + w5*(z_hip_min_t-z_hip_min) + w6*(z_top_min_t-z_top_min);
-
-	% handle corner case when model walks backwards (e.g., objective_value =
-	% 1000)
-    if dx_hip_avg<=0
-		objective_value = 10000000;
-    end
-
-    if cmt<0
-		objective_value = 10000000;
-    end
-
-    if results(5)<0.3
-		objective_value = 10000000;
-    end
-    
-    if z_top_min<0.5
-		objective_value = 10000000;
-    end
-    
-%     if objective_value<0
-%         objective_value
-%         distance_travelled
-%         z_hip_average
-%         z_top_average
-%         CoT
-%     end
+	objective_value = w1*distance_travelled+w2*(dx_hip_t-dx_hip_avg)+w3*(step_length_t-step_length_avg)^2+w4*cmt+w5*(z_hip_min_t-z_hip_min) + w6*(z_top_min_t-z_top_min);
 
 end

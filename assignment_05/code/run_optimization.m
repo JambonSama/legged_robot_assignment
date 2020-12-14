@@ -20,12 +20,12 @@ options = optimoptions(@fmincon,'Algorithm','interior-point');
 
 problem = createOptimProblem('fmincon','x0',x0,'objective', @optimization_fun,'lb',l,'ub',u,'options',options);
 % [x,fming,flagg,outptg,manyminsg] = run(gs,problem);
-[x,fval,eflag,output,manymins] = run(ms,problem,600);
+[x,fval,eflag,output,manymins] = run(ms,problem,200);
 
 % opti = fminsearch(@optimziation_fun,x0,options);
 
 %% Simulate solution
-num_steps = 50;
+num_steps = 10;
 sln = solve_eqns(q0, dq0, num_steps, x);
 animate(sln);
 results = analyse(sln, x, false);
