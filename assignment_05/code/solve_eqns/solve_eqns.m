@@ -23,7 +23,8 @@ function sln = solve_eqns(q0, dq0, num_steps, parameters)
 	sln.YE = {};
 
 	for i = 1:num_steps
-		[T, Y, TE, YE] = ode45(@(t, y) eqns(y, y0, parameters), t0 + tspan, y0, options);
+		[T, Y, TE, YE] = ode45(@(t, y) eqns(t, y, y0, i, parameters), t0 + tspan, y0, options);
+
 		sln.T{i} = T;
 		sln.Y{i} = Y;
 		sln.TE{i} = TE;
@@ -45,6 +46,7 @@ function sln = solve_eqns(q0, dq0, num_steps, parameters)
 		y0 = [q_p; dq_p];
 		t0 = T(end);
 
-	end
+    end
+    clear eqns % to remove the persistent start noise between each run
 
 end
