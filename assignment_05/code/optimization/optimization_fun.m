@@ -32,10 +32,10 @@ function objective_value = optimization_fun(y)
     step_length_avg = results(7);
 
 	objective_value = w2*abs(dx_hip_t-dx_hip_avg)+w4*cmt^2+w6*abs(step_length_t-step_length_avg);
-    
+
     if dx_hip_avg<0 || z_hip_min <0.3
         objective_value = Inf;
     end
-        
+
 
 end
