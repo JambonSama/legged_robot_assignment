@@ -5,29 +5,30 @@
 %%
 function animate(sln)
 
-    % v = VideoWriter("virtual_model","Uncompressed AVI");
-    % open(v)
+	% v = VideoWriter("virtual_model","Uncompressed AVI");
+	% v.FrameRate = 60
+	% open(v)
 	figure();
 	skip = 10;
 	tic();
 	num_steps = length(sln.T);
 	r0 = [0; 0];
-    visualize(0, 0, "reset");
+	visualize(0, 0, "reset");
 	for j = 1:num_steps
 		Y = sln.Y{j};
 		[N, ~] = size(Y);
 		for i = 1:skip:N
 			q = Y(i, 1:3);
-			pause(1/200.0);
+			pause(1/60.0);
 			visualize(q, r0);
-            % A = getframe(gcf);
-            % writeVideo(v,A)
+			% A = getframe(gcf);
+			% writeVideo(v,A)
 		end
 		[x0, ~, ~, ~] = kin_swf(q);
 		r0 = r0 + [x0; 0];
-    end
+	end
 
-    % close(v)
+	% close(v)
 	t_anim = toc();
 	real_time_factor = sln.T{end}(end) / t_anim;
 	fprintf('Real time factor:');
