@@ -46,8 +46,7 @@ function u = control(q, dq, q0, dq0, parameters)
 	kdx_swf = parameters(7);
 	kpz_swf = parameters(8);
 	kdz_swf = parameters(9);
-	h = parameters(10);
-	step_length = parameters(11);
+	step_length = parameters(10);
 
 	% Computation ref value Swing foot
 	x_swf_t = step_length/2;
@@ -56,14 +55,13 @@ function u = control(q, dq, q0, dq0, parameters)
 
 	% Task space projection swing point
 	J_swf = [l1*cos(q(1)), -l2*cos(q(2)), 0; -l1*sin(q(1)), l2*sin(q(2)), 0];
-	f_swf = [kpx_swf*(x_swf_t-x_swf) + kdx_swf*(0-dx_swf); kpz_swf*h*sin(q(2))+kdz_swf*(0-dz_swf)];
+	f_swf = [kpx_swf*(x_swf_t-x_swf) + kdx_swf*(0-dx_swf); kpz_swf*sin(q(2))+kdz_swf*(0-dz_swf)];
 	u_swf = B_inv*J_swf'*f_swf;
 
 	%% Compute command
 	u = u_top + u_hip + u_swf;
 
 	% saturate the output torque
-	%u = [u1; u2];
 	u = max(min(u, 30), -30);
 
 end

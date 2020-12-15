@@ -9,7 +9,7 @@
 function sln = solve_eqns(q0, dq0, num_steps, parameters)
 
 	options = odeset('RelTol',1e-5, 'Events', @event_func);
-	h = 0.001; % time step
+	h = 0.01; % time step
 	tmax = 2; % max time that we allow for a single step
 	tspan = 0:h:tmax;
 	y0 = [q0; dq0];

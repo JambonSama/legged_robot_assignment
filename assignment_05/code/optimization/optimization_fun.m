@@ -14,11 +14,11 @@ function objective_value = optimization_fun(y)
 	w1 = -1;
 	w2 = 100;
 	w3 = 200;
-    w4 = 20;
+    w4 = 100;
     w5 = 100;
     w6 = 100;
-	dx_hip_t = 0.7; %Desired horizontal velocity
-    step_length_t = 0.5;
+	dx_hip_t = 0.5; % desired horizontal velocity
+    step_length_t = 0.3;
     z_hip_min_t = 0.35;
     z_top_min_t = 0.6;
 
@@ -31,6 +31,11 @@ function objective_value = optimization_fun(y)
     z_top_min = results(6);
     step_length_avg = results(7);
 
-	objective_value = w1*distance_travelled+w2*(dx_hip_t-dx_hip_avg)+w3*(step_length_t-step_length_avg)^2+w4*cmt+w5*(z_hip_min_t-z_hip_min) + w6*(z_top_min_t-z_top_min);
+	objective_value = w2*abs(dx_hip_t-dx_hip_avg)+w4*cmt^2+w6*abs(step_length_t-step_length_avg);
+    
+    if dx_hip_avg<0 || z_hip_min <0.3
+        objective_value = Inf;
+    end
+        
 
 end
