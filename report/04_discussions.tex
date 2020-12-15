@@ -1,9 +1,15 @@
+\newpage
 \section{Discussions}
 
-\subsection{Virtual constraints}
+\subsection{Virtual constraints controller}
 
-The goal of the assignments were met.
-A robust bipedal robot was conceived following the instructions and an optimization on the initial conditions and the parameters was performed.
+The goal of the assignments concerning the virtual constraints controller were met.
+A functional bipedal robot was conceived following the instructions and the discussed parameters were optimized upon in order to produce a appropriate gait.
+The gait has been examined both qualitatively, through the animated simulation; and quantitatively, which assessed the quality of the gait.
+The steady-state was reached rather quickly, and exhibit a periodic behaviour.
+
+\vspace{\baselineskip}
+
 The advantages of this method is the ease of implementation of the model.
 The physics are reduced to their minimum, and the hybrid model used to combine the motion of the swing foot as well as handling the stance foot proved to be reliable during the simulations.
 The under actuation of the robot was handled well by the chosen controller.
@@ -14,10 +20,9 @@ However the simplicity of this model is also its limitation.
 Having the stance foot fixed on the ground while the swing foot passes through hinder the utility of this model in more realistic environment.
 Numerous hypothesis to establish the gaits' equations were posed, such as an instantaneous impact of the foot, ground reaction forces and friction of the feet are not evaluated at all and the foot can't slip. 
 
-\subsection{Reinforcement learning}
+\subsection{Reinforcement learning controller}
 
 Reinforcement learning, had it worked, would have provided a robust simulation were the controller could have chosen from a an optimal policy the best action to take depending on the state of the robot.
-By maximizing a reward function with potentially reward at each steps it is possible to fine tune the behaviour of the simulated robot.
 
 \vspace{\baselineskip}
 
@@ -26,22 +31,30 @@ In fact the agent is sensitive to the weights and the objectives defined by the 
 However it is most helpful when the physics of the model robot are unknown or too complicated to mathematically transcribe.
 Furthermore, with a bit of knowledge on the system at hand, it is possible to guide the training of the agent, thus making it more efficient and accelerating the training phase.
 
-\subsection{Virtual model}
+\subsection{Virtual model controller}
 
-By simulating virtual mechanical devices to induce a torque on the simulated robot just as a real mechanical device would have, it is possible to control the simulated robot along a desired trajectory with precision.
+By simulating virtual mechanical devices to induce a torque on the simulated robot just as a real mechanical device would, it is possible to control the simulated robot along a desired trajectory with precision.
 Thus complex tasks are made easier by using virtual forces.
 In theory virtual model control is supposed to easy to compute and and can be changed by a higher level controller during state transitions, thus guaranteeing smooth motions.
 
 \vspace{\baselineskip}
 
-However in our case, virtual model has not achieved the desired performances and a walking gait under actuator saturation for an infinite number of steps was not achieved.
-This could be explained by multiple factors.
+In our case, a walking gait under actuator saturation for at least 100 steps was achieved.
+The gait was maybe not what we expected, but it was a walking gait nonetheless.
+The controller is robust to both internal and external perturbations, to quite an extent for external perturbations.
+The optimization was very painful, and much more often than not, didn't converge to a suitable solution.
+While this issue might be attributed to a badly designed controller, similar observations were made during experiments~\cite{pratt}.
 
-First, the defined tasks were simply missing an additional virtual force in order for the controller to actuate the robot in a desired fashion.
-While only the hip, the torso and the swing foot have to follow a specific task in the current controller, there might have been another point which could have been actuated. 
-Another factor could had been simply not using the correct parameters for the controller.
-The optimization process was supposed to help find the correct parameters for the controller.
-Either the objective function or the constraints on the system were ill-defined, but no optimal parameters were found after using MATLAB's toolbox for global optimization.
-This is coherent with similar experiments on virtual model control, where the simulations are highly dependent on initial conditions.
-Another hindrance to the use of virtual model control is that it might need a high bandwidth for the actuator.
-Our controller appear to be jumping from \SI{-100}{\newton\meter} to \SI{250}{\newton\meter}, and while this issue might be attributed to a badly designed controller, similar observations were made during experiments~\cite{pratt}.
+\subsection{Comparison between virtual constraints and virtual model}
+
+The virtual constraints controller's gait is much more "appropriate" than the virtual model controller.
+At the very least, it is obvious when looking at the animated simulation that most scientists would emit strong reserves if such a controller (the virtual model one) were to be applied to real, physical bipedal robot.
+
+\vspace{\baselineskip}
+
+The normalized effort is 1.7 times bigger for the virtual model controller, but the CMT is 2.5 times bigger for the virtual constraints model.
+The CMT was computed accorded to the provided expression in assignment 4.
+At any rate, those two metrics were considered with caution, because they don't seem very consisten with each other, nor with other more descriptive metrics.
+Typically, we would have expected the virtual model controller's CMT to be higher than the one from the virtual constraints controller.
+
+

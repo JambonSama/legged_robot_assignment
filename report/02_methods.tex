@@ -60,7 +60,7 @@ A quick visualization allows to assess visually that the kinematics are correct:
 % generate dynamics.mlx
 % eval M.m, eval C.m, eval G.m, eval B.m
 
-Computing the dynamics means computing the mass matrix $\mathbf{M}$, Coriolis matrix $\mathbf{C}$, gravity matrix $\mathbf{G}$ and control matrix $\mathbf{B}$ for the robot, from the kinematics, using the Lagrangian method.
+Computing the dynamics means computing the mass matrix $\mathbf{M}$, Coriolis matrix $\mathbf{C}$, gravity vector $\mathbf{G}$ and control matrix $\mathbf{B}$ for the robot, from the kinematics, using the Lagrangian method.
 This allows to have the equation of motion for the robot:
 
 \begin{align}
@@ -115,7 +115,7 @@ Then, the control matrix $\mathbf{B}$ is computed. The robot is commanded throug
 				\draw[dashed] (0.7,0)--(0.7,0.25); % small vertical dashed line
 
 				\draw[->,ultra thick, red] (0.7,0)--(0.8,0) node[above]{$x$}; % x axis
-				\draw[->,ultra thick, red] (0.7,0)--(0.7,0.1) node[right]{$y$}; % y axis
+				\draw[->,ultra thick, red] (0.7,0)--(0.7,0.1) node[right]{$z$}; % y axis
 
 				\draw [->,thick,domain=81.00000000052139:-63.4349488, blue] plot ({0.5+0.15*cos(\x)}, {0.4+0.15*sin(\x)}); % u1
 				\draw [->,thick,domain=81.00000000052139:-116.5650512, blue] plot ({0.5+0.10*cos(\x)}, {0.4+0.10*sin(\x)}); % u2
@@ -282,8 +282,8 @@ with $m=m_1=m_2$, and thus both $\mathbf{q}_p$ and $\mathbf{\dot{q}}_p$ can be c
 
 In the introduction, the control design pipeline was described in three steps.
 After the modelling step that has been discussed in the previous section, there is the simulation step.
-The idea is to translate the (second order) equations of motion (for swing phase), Equation~\ref{eq::motion_eq}, into first order differential equations, in order to solve them numerically.
-The discrete events of impact with the ground can be dealt with an even function that interrupts the integrator of the numerical integration when impact conditions are met.
+The idea is to translate the (second order) equations of motion, Equation~\ref{eq::motion_eq} that describes the swing phase, into first order differential equations, in order to solve them numerically.
+The discrete events of impact with the ground can be dealt with an event function that interrupts the integrator of the numerical integration when impact conditions are met.
 When impact is dealt with, the integrator is given new "initial conditions" and numerical integration is resumed.
 
 \subsubsection{Equations of motion}
@@ -475,7 +475,7 @@ Let's discuss some of the more common numerical integration algorithms.
 
 \subsection{Control and optimization}
 
-This design of a controller and its optimization is the third step of control design pipeline. The implementation of three controllers were attempted, with various degrees of success.
+This design of controllers and their optimizations is the third step of control design pipeline. The implementation of three controllers were attempted, with various degrees of success.
 The first is the virtual constraints controller, the second, a controller based on reinforcement learning, and the third, a virtual model controller using task space projection.
 
 \subsubsection{Virtual constraints controller}
@@ -487,7 +487,7 @@ They are a function of the model's coordinates, and represent conditions that he
 Thus, the goal is to cancel them by closing the loop with a PD controller.
 On Figure~\ref{fig::model_with_command}, it can be seen that the model is under-actuated.
 $u_1$ can control both the torso ($q_3$ and $q_1$) and stance foot, while $u_2$ can control both the torso and swing foot ($q_3$ and $q_2$).
-Thus a choice has to made about which generalized coordinates are controlled directly, and which is free to follow the dynamics of the model.
+Thus a choice has to be made about which generalized coordinates are controlled directly, and which is free to follow the dynamics of the model.
 Here it is chosen that $u_1$ directly controls the torso, and indirectly the stance foot, while $u_2$ directly controls the swing foot:
 
 \begin{align*}
@@ -526,7 +526,7 @@ where $\dot{x}_\text{hip d}$ is the desired horizontal hip velocity, $\bar{\dot{
 
 \vspace{\baselineskip}
 
-The CMT, Cost of Mechanical Transport is defined through the effort $U$ like so:
+The CMT, Cost of Mechanical Transport is defined through the normalized effort $U$ like so:
 
 \begin{align*}
 	\text{CMT} &= \dfrac{U}{x_\text{h}(T)-x_\text{h}(1)} \\
@@ -547,7 +547,7 @@ while managing the competing aspects of the terms (minimizing the CMT implies de
 Here, the optimizer's decision variables are:
 
 \begin{itemize}
-	\item $\mathbf{q0}$ and $\mathbf{\dot{q0}}$,
+	\item $\mathbf{q}_0$ and $\mathbf{\dot{q}}_0$,
 	\item $k_{p1}$, $k_{p2}$,
 	\item $k_{d1}$, $k_{d2}$,
 	\item and the leaning angle $\alpha$.
@@ -683,6 +683,16 @@ And the virtual force chosen is:
 
 so that the position is constrained relative to the hip by the leaning angle $\alpha$ while the velocity is damped.
 
+\vspace{\baselineskip}
+
+It is worth to note that the task space of the top point is difficult to nail, so instead, we applied the angle method from the virtual constraints controller:
+
+\begin{align*}
+	\mathbf{u}_\text{top} &= \begin{bmatrix}
+		k_{\text{p}x_\text{top}} \left( q_3 -\alpha \right) + k_{\text{d}x_\text{top}} \dot{q}_3 \\ 0
+	\end{bmatrix}
+\end{align*}
+
 \paragraph{Hip joint task space}
 
 The Jacobian is described by:
@@ -717,15 +727,69 @@ And the virtual force chosen is:
 
 \begin{align*}
 	\mathbf{f}_\text{swf} &= \begin{bmatrix}
-		k_{\text{p}x_\text{swf}} \left( x_\text{swf t}-x_\text{swf} \right) + k_{\text{d}x_\text{swf}} \left( \dot{x}_\text{swf t}-\dot{x}_\text{swf} \right) \\ k_{\text{p}z_\text{swf}} h \sin q_2 + k_{\text{d}z_\text{swf}} \left( \dot{z}_\text{swf t}-\dot{z}_\text{swf} \right)
+		k_{\text{p}x_\text{swf}} \left( x_\text{swf t}-x_\text{swf} \right) + k_{\text{d}x_\text{swf}} \left( \dot{x}_\text{swf t}-\dot{x}_\text{swf} \right) \\ k_{\text{p}z_\text{swf}} \sin q_2 + k_{\text{d}z_\text{swf}} \left( \dot{z}_\text{swf t}-\dot{z}_\text{swf} \right)
 	\end{bmatrix} \\
 	\text{s.t } x_\text{swf t} & = \dfrac{\text{step length}}{2} \\
 	\dot{x}_\text{swf t} &= 0 \\
 	\dot{z}_\text{swf t} &= 0	
 \end{align*}
 
-and a $h$ adequately small.
 Thus, the velocity is damped, the target horizontal position is constrained by the step length, and the vertical position is constrained by a positive force for $q_2>0$ and a negative force for $q_2<0$.
+
+\vspace{\baselineskip}
+
+Graphically, the tasks function can represented as seen on Figure~\ref{fig::model_with_tasks} below:
+
+\begin{figure}[H]
+	\begin{center}
+		\begin{tikzpicture}
+			\begin{scope}[x={8cm},y={8cm}]
+				% l = 0,447213
+				% alpha = 8.999999999478607 deg
+				% =0.5+sqrt(0.2^2+0.4^2)*sin(pi/20)
+				% =0.4+sqrt(0.2^2+0.4^2)*cos(pi/20)
+				
+				\draw[-] (0,0)--(1,0); % ground
+				
+				\draw[-,ultra thick] (0.3,0)--(0.5,0.4); % link 2
+				\draw[-,ultra thick] (0.7,0)--(0.5,0.4); % link 1
+				\draw[-,ultra thick] (0.5,0.4)--(0.5699596195707541,0.8417076540309386); % link 3
+				
+				\draw[dashed] (0.5,0.15)--(0.5,0.8); % big vertical dashed line
+				\draw[dashed] (0.7,0)--(0.7,0.25); % small vertical dashed line
+				
+				\draw[->,ultra thick, red] (0.7,0)--(0.8,0) node[above]{$x$}; % x axis
+				\draw[->,ultra thick, red] (0.7,0)--(0.7,0.1) node[right]{$z$}; % y axis
+				
+				\draw [->,thick,domain=-90:-116.5650512] plot ({0.5+0.15*cos(\x)}, {0.4+0.15*sin(\x)}); % q2
+				\draw [->,thick,domain=90:116.5650512] plot ({0.7+0.15*cos(\x)}, {0.15*sin(\x)}); % q1
+				\draw [->,thick,domain=90:81.00000000052139] plot ({0.5+0.3*cos(\x)}, {0.4+0.3*sin(\x)}); % q3
+				
+				\node at (0.4,0.2) [circle,fill,inner sep=1]{.}; % m2
+				\node at (0.6,0.2) [circle,fill,inner sep=1]{.}; % m1
+				\node at (0.5349798097853771,0.6208538270154693) [circle,fill,inner sep=1]{.}; % m3
+				
+				\node[text width=0mm] at (0.63,0.2) {$q_1$};
+				\node[text width=0mm] at (0.43,0.2) {$q_2$};
+				\node[text width=0mm] at (0.51,0.76) {$q_3$};
+				
+				\node[text width=0mm] at (0.55,0.16) {$m_1$};
+				\node[text width=0mm] at (0.32,0.2) {$m_2$};
+				\node[text width=0mm] at (0.56,0.62) {$m_3$};
+				
+				\node at (0.3,0) [circle,fill,inner sep=1.5, blue]{.};
+				\node at (0.5,0.4) [circle,fill,inner sep=1.5, blue]{.};
+				
+				\draw[->,ultra thick, blue] (0.5,0.4)--(0.6,0.4) node[right]{$f{x_\text{hip}}$};
+				\draw[->,ultra thick, blue] (0.3,0)--(0.4,0) node[above]{$f{x_\text{swf}}$};
+				\draw[->,ultra thick, blue] (0.3,0)--(0.3,0.1) node[left]{$f{z_\text{swf}}$};
+			\end{scope}
+		\end{tikzpicture}
+	\end{center}
+	\caption{Representation of the three-link 2D biped model with the tasks forces used for the virtual model controller.}
+	\label{fig::model_with_tasks}
+\end{figure}
+
 
 \paragraph{Command vector}
 
@@ -733,49 +797,57 @@ Finally, the command vector is computed as:
 
 \begin{align*}
 	\mathbf{u} &= \mathbf{u}_\text{top} + \mathbf{u}_\text{hip} + \mathbf{u}_\text{swf} \\
-	&= \mathbf{B}^+ \mathbf{J}_\text{top}^T \mathbf{f}_\text{top} + \mathbf{B}^+ \mathbf{J}_\text{hip}^T \mathbf{f}_\text{hip} + \mathbf{B}^+ \mathbf{J}_\text{swf}^T \mathbf{f}_\text{swf}
+	&= \mathbf{u}_\text{top} + \mathbf{B}^+ \mathbf{J}_\text{hip}^T \mathbf{f}_\text{hip} + \mathbf{B}^+ \mathbf{J}_\text{swf}^T \mathbf{f}_\text{swf}
 \end{align*}
 
 and afterwards saturated to \SI{30}{\newton\meter}.
-
-\vspace{\baselineskip}
-
-It is worth to note that the task space of the top point is difficult to nail, so instead, we applied the angle method from the virtual constraints controller:
-
-\begin{align*}
-	\mathbf{u}_\text{top} &= \begin{bmatrix}
-		k_{\text{p}x_\text{top}} \left( q_3 -\alpha \right) + k_{\text{d}x_\text{top}} \dot{q}_3 \\ 0
-	\end{bmatrix}
-\end{align*}
 
 \paragraph{Optimization}
 The optimization problem is defined as the objective function $f$ of the decision variables $p$ chosen amongst the model parameters:
 
 \begin{align}
 	\label{eq::virtual_model_objective_fun}
-	f(p) &= w_1 | \dot{x}_\text{hip d} - \bar{\dot{x}}_\text{hip}(p) | + w_2 \text{CMT}(p) + w_3 \left( z_\text{hip d} - \bar{z}_\text{hip}(p) \right) + w_4 d + w_5 (f_\text{d}-\bar{f})^2 
+	f(p) &= w_1 d(p) + w_2 | \dot{x}_\text{hip d} - \bar{\dot{x}}_\text{hip}(p) | + w_3 \text{CMT}(p)^2 + w_4 | z_\text{hip d} - \bar{z}_\text{hip}(p) | + w_5 | z_\text{top d} - \bar{z}_\text{top}(p) | + w_6 | \text{step length}_\text{d} - \text{step length}|
 \end{align}
 
 where:
 
 \begin{itemize}
+	\item $d(p)$ the simulated total distance travelled by the robot,
 	\item $\dot{x}_\text{hip d}$ is the desired horizontal hip velocity,
-	\item $\bar{\dot{x}}_\text{hip} (p)$ the simulated average horizontal velocity,
-	\item $z_\text{hip d}$ the desired vertical position,
-	\item $\bar{z}_\text{hip}$ the simulated average vertical position,
-	\item $d$ the total distance travelled by the robot,
-	\item $f_\text{d}$ is the desired step frequency,
-	\item $\bar{f}$ is the simulated average step frequency,
+	\item $\bar{\dot{x}}_\text{hip} (p)$ the simulated average horizontal hip velocity,
+	\item $z_\text{hip d}$ the desired vertical hip position,
+	\item $\bar{z}_\text{hip}$ the simulated average vertical hip position,
+	\item $z_\text{top d}$ the desired vertical top position,
+	\item $\bar{z}_\text{top}$ the simulated average vertical top position,
+	\item CMT$(p)$ the cost of mechanical transport as already defined,
+	\item $\text{step length}_\text{d}$ the desired step length,
+	\item step length the simulated average step length,
 	\item and $w_i$ the weights.
 \end{itemize}
 
-%\vspace{\baselineskip}
-%
-%Here, the optimizer's decision variables are:
-%
-%\begin{itemize}
-%	\item bla,
-%	\item bla,
-%	\item bla,
-%	\item and bla bla.
-%\end{itemize}
+\vspace{\baselineskip}
+
+Many versions of this objective function were run, with various weights for each term, from 0 to cancel them out, to a much important proportion within $\sum w_i$.
+In total, about thirty versions were optimized on five computers for a total of approximately fifty hours.
+
+\paragraph{External forces}
+
+After the final iteration of our optimizations was completed, the robustness of the controller to external forces was tested.
+In order to do so, an external force of either \SI{100}{\newton} pushing, or \SI{-15}{\newton} pulling was applied to the hip at the beginning of a steady-state step for \SI{0.2}{\second}.
+
+\paragraph{Internal forces}
+
+And then, the robustness to measuring noise was tested as well, with centered gaussian noises applied to each $q_i$ and $\dot{q}_i$:
+
+\begin{itemize}
+	\item null average for both,
+	\item 0.01 of variance for $q_i$,
+	\item and 0.1 or variance for $\dot{q}_i$. 
+\end{itemize}
+
+The noise is continuously applied after reaching the steady-state.
+
+\vspace{\baselineskip}
+
+The values for both external and internal forces were chosen after several iterations to be close to the limits of the controller.
