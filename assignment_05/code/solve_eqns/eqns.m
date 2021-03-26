@@ -20,25 +20,25 @@ function dy = eqns(t, y, y0, stepnum, parameters)
 	B = eval_B();
 
     % Perturbation intern and extern
-    if(stepnum>35)
-        if isempty(start_noise)
-            start_noise = t;
-        end
-        if(t-start_noise<0.2)
-            % Extern : Force on hip
-            f = [-15;0];
-            [~, ~, ~, l1, ~, ~, ~] = set_parameters();
-            J_hip = [l1*cos(q(1)), 0, 0; -l1*sin(q(1)), 0, 0];
-            tau_pert = J_hip' * f;
-
-        else
-            tau_pert = 0;
-        end
-        % Intern : Noise on q and dq
+%     if(stepnum>35)
+%         if isempty(start_noise)
+%             start_noise = t;
+%         end
+%         if(t-start_noise<0.2)
+%             Extern : Force on hip
+%             f = [-15;0];
+%             [~, ~, ~, l1, ~, ~, ~] = set_parameters();
+%             J_hip = [l1*cos(q(1)), 0, 0; -l1*sin(q(1)), 0, 0];
+%             tau_pert = J_hip' * f;
+% 
+%         else
+%             tau_pert = 0;
+%         end
+%         Intern : Noise on q and dq
 %          noise = normrnd(0, 0.1);
 %          noise_q = [0;0;0];
 %          noise_dq = [noise;0;0];
-    end
+%     end
 
 	u = control(q+noise_q, dq+noise_dq, q0, dq0, parameters);
 

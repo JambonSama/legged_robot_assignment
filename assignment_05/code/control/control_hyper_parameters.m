@@ -11,7 +11,7 @@ function parameters = control_hyper_parameters()
 	% Parameters for swing task
 	kpx_swf = 2;
 	kdx_swf = 0.062500000000000;
-	kpz_swf = 0.1;
+	kpz_swf = 52.430783792919290;
 	kdz_swf = 0.517842810609692;
 	step_length = 0.551900577000140;
 
